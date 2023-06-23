@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wingsweaver.kuja</groupId>
+        <artifactId>kuja-project-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>kuja-common-parent</artifactId>
+    <version>${revision}</version>
+    <description>kuja 项目群的父项目</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <java.version>8</java.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
+        <revision>2023.05-SNAPSHOT</revision>
+        <kuja-common.version>${revision}</kuja-common.version>
+
+        <!-- 编译打包组件 -->
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+
+        <!-- 组件库版本 : Spring -->
+        <spring-framework.version>5.3.13</spring-framework.version>
+        <spring-boot-dependencies.version>2.4.13</spring-boot-dependencies.version>
+        <codecentric-boot-admin.version>2.4.3</codecentric-boot-admin.version>
+        <spring-cloud-dependencies.version>2020.0.6</spring-cloud-dependencies.version>
+        <spring-cloud-services-dependencies.version>2.4.1</spring-cloud-services-dependencies.version>
+
+        <!-- 组件库版本 : 其他 -->
+        <lombok.version>1.18.24</lombok.version>
+        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
+        <spotbugs-annotations.version>4.7.3</spotbugs-annotations.version>
+        <semver4j.version>3.1.0</semver4j.version>
+        <javax.jms-api.version>2.0.1</javax.jms-api.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-io.version>2.2</commons-io.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+        <redisson.version>3.19.0</redisson.version>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot 组件库 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-dependencies</artifactId>
+                <version>${codecentric-boot-admin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud 组件库 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.pivotal.spring.cloud</groupId>
+                <artifactId>spring-cloud-services-dependencies</artifactId>
+                <version>${spring-cloud-services-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 其他组件库 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${findbugs-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>${spotbugs-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vdurmont</groupId>
+                <artifactId>semver4j</artifactId>
+                <version>${semver4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jms</groupId>
+                <artifactId>javax.jms-api</artifactId>
+                <version>${javax.jms-api.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>kuja-common-bom</module>
+
+        <!-- 核心项目 -->
+        <module>kuja-common-utils</module>
+        <module>kuja-common-boot</module>
+        <module>kuja-common-web</module>
+        <module>kuja-common-webmvc-common</module>
+        <module>kuja-common-webmvc-jee</module>
+        <module>kuja-common-webmvc-jakarta</module>
+        <module>kuja-common-webflux</module>
+        <module>kuja-common-messaging</module>
+        <module>kuja-common-cloud</module>
+
+        <!-- Starter 项目 -->
+        <module>kuja-starter-common-boot</module>
+        <module>kuja-starter-common-cloud</module>
+        <module>kuja-starter-common-messaging</module>
+        <module>kuja-common-messaging-jakarta</module>
+        <module>kuja-starter-common-webflux</module>
+        <module>kuja-starter-common-webmvc-jakarta</module>
+        <module>kuja-starter-common-webmvc-jee</module>
+    </modules>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>verify</id>
+            <modules>
+                <module>kuja-common-aggregate</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>

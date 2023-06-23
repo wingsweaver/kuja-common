@@ -1,0 +1,5 @@
+com.wingsweaver.kuja.common.utils.exception.ErrorInfoExporterFactory=\
+com.wingsweaver.kuja.common.utils.exception.DummyErrorInfoExporterFactory
+
+com.wingsweaver.kuja.common.utils.model.tags.convert.TagConversionServiceConfigurer=\
+com.wingsweaver.kuja.common.utils.model.tags.convert.DummyTagConversionServiceConfigurer
