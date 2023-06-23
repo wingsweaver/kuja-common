@@ -1,0 +1,17 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.wingsweaver.kuja.common.boot.env.postprocessor.PresetEnvironmentPostProcessor,\
+com.wingsweaver.kuja.common.boot.env.postprocessor.FallbackEnvironmentPostProcessor,\
+com.wingsweaver.kuja.common.boot.env.postprocessor.InheritedEnvironmentPostProcessor,\
+com.wingsweaver.kuja.common.boot.env.postprocessor.RemoveInheritedEnvironmentPostProcessor
+# com.wingsweaver.kuja.common.boot.env.resolver.PreEnvironmentResolverProcessor,\
+# com.wingsweaver.kuja.common.boot.env.resolver.PostEnvironmentResolverProcessor
+
+com.wingsweaver.kuja.common.boot.env.postprocessor.PresetEnvironmentProcessor=\
+com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultPresetEnvironmentProcessor
+
+com.wingsweaver.kuja.common.boot.env.postprocessor.FallbackEnvironmentProcessor=\
+com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultFallbackEnvironmentProcessor
+
+org.springframework.context.ApplicationListener=\
+com.wingsweaver.kuja.common.boot.io.OptionalProtocolResolverRegistrar,\
+com.wingsweaver.kuja.common.boot.env.postprocessor.InheritEnvironmentPropertySourceHolder
