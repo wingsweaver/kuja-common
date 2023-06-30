@@ -1,38 +1,34 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
 import com.wingsweaver.kuja.common.boot.constants.KujaCommonBootOrders;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 /**
  * 预热处理的执行器。
  *
  * @author wingsweaver
  */
-public class WarmUpTriggerBean implements InitializingBean, SmartLifecycle, CommandLineRunner, Ordered {
+@Getter
+@Setter
+public class WarmUpTriggerBean extends AbstractComponent implements SmartLifecycle, CommandLineRunner, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(WarmUpTriggerBean.class);
 
-    @Getter
-    @Setter
-    private ApplicationContext applicationContext;
-
-    @Getter
-    @Setter
+    /**
+     * 预热处理的相关设置。
+     */
     private WarmUpProperties properties;
 
     @Override
@@ -53,16 +49,14 @@ public class WarmUpTriggerBean implements InitializingBean, SmartLifecycle, Comm
      * 执行预热处理。
      */
     public void warmUp() {
-        // 获取所有的预热任务
-        List<WarmUpTask> tasks = this.applicationContext.getBeanProvider(WarmUpTask.class)
-                .orderedStream().collect(Collectors.toList());
-
         // 生成任务执行器
         LogUtil.trace(LOGGER, "Creating warmup task executor ...");
         WarmUpTaskExecutor executor = this.createTaskExecutor();
+        this.autowireBean(executor);
 
         // 执行任务
         LogUtil.trace(LOGGER, "Executing warmup task executor {} ...", executor);
+        List<WarmUpTask> tasks = this.getBeansOrdered(WarmUpTask.class);
         executor.execute(tasks);
     }
 
@@ -75,7 +69,7 @@ public class WarmUpTriggerBean implements InitializingBean, SmartLifecycle, Comm
         // 如果指定了 WarmUpTaskExecutor 的话，使用指定的 WarmUpTaskExecutor
         String taskExecutorName = StringUtil.trimToEmpty(this.properties.getTaskExecutorName());
         if (!taskExecutorName.isEmpty()) {
-            return this.applicationContext.getBean(taskExecutorName, WarmUpTaskExecutor.class);
+            return this.getBean(taskExecutorName, WarmUpTaskExecutor.class, false);
         }
 
         // 如果没有指定 WarmUpTaskExecutor 的话，那么使用默认的 WarmUpTaskExecutor
@@ -83,15 +77,15 @@ public class WarmUpTriggerBean implements InitializingBean, SmartLifecycle, Comm
             String executorName = this.properties.getAsyncExecutorName();
             if (StringUtils.hasText(executorName)) {
                 // 使用指定的 Executor 创建 AsyncWarmUpTaskExecutor 实例
-                Executor executor = this.applicationContext.getBean(executorName, Executor.class);
-                return new AsyncWarmUpTaskExecutor(this.applicationContext, executor);
+                Executor executor = this.getBean(executorName, Executor.class, false);
+                return new AsyncWarmUpTaskExecutor(this.getApplicationContext(), executor);
             } else {
                 // 使用默认的 Executor 创建 AsyncWarmUpTaskExecutor 实例
-                return new AsyncWarmUpTaskExecutor(this.applicationContext);
+                return new AsyncWarmUpTaskExecutor(this.getApplicationContext());
             }
         } else {
             // 创建同步的 WarmUpTaskExecutor 实例
-            return new SyncWarmUpTaskExecutor(this.applicationContext);
+            return new SyncWarmUpTaskExecutor(this.getApplicationContext());
         }
     }
 
@@ -112,8 +106,19 @@ public class WarmUpTriggerBean implements InitializingBean, SmartLifecycle, Comm
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("applicationContext", this.getApplicationContext());
-        AssertState.Named.notNull("properties", this.getProperties());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 properties
+        this.initProperties();
+    }
+
+    /**
+     * 初始化 properties。
+     */
+    protected void initProperties() {
+        if (this.properties == null) {
+            this.properties = this.getBean(WarmUpProperties.class);
+        }
     }
 }

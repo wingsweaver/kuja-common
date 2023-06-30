@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootApplication
@@ -41,7 +40,7 @@ class BeanUtilTest {
     @Test
     void autowire() {
         Object object = new Object();
-        assertSame(object, BeanUtil.autowire(null, object));
+        BeanUtil.autowire(null, object);
 
         Tester tester = new Tester();
         assertNull(tester.applicationContext);
@@ -92,7 +91,7 @@ class BeanUtilTest {
         private Environment environment;
 
         @Override
-        public void afterPropertiesSet() {
+        public void afterPropertiesSet() throws Exception {
             this.applicationContextName = applicationContext.toString();
         }
 

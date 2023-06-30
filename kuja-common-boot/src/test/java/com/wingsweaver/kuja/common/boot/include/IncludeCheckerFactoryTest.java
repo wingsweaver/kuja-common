@@ -2,6 +2,7 @@ package com.wingsweaver.kuja.common.boot.include;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextAccessor;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,7 +13,7 @@ class IncludeCheckerFactoryTest {
     void test() {
         IncludeSettings settings = new IncludeSettings();
         IncludeCheckerFactory checkerFactory = new IncludeCheckerFactory(settings);
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         IncludeChecker checker = checkerFactory.build(businessContext, null);
         assertFalse(checker.includes(null));
         assertFalse(checker.includes(""));
@@ -23,7 +24,7 @@ class IncludeCheckerFactoryTest {
     void test2() {
         IncludeSettings settings = new IncludeSettings(IncludeAttribute.ALWAYS);
         IncludeCheckerFactory checkerFactory = new IncludeCheckerFactory(settings);
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         IncludeChecker checker = checkerFactory.build(businessContext, null);
         assertFalse(checker.includes(null));
         assertFalse(checker.includes(""));
@@ -40,7 +41,7 @@ class IncludeCheckerFactoryTest {
                 new IncludeSettings.IncludeItem("service(.)*", IncludeAttribute.ON_ATTRIBUTE));
         IncludeCheckerFactory checkerFactory = new IncludeCheckerFactory(settings);
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         BusinessContextAccessor accessor = new BusinessContextAccessor(businessContext);
         accessor.setAttribute("checker.host", true);
         accessor.setAttribute("service", true);

@@ -1,19 +1,15 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.exception.ExtendedRuntimeException;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.model.tuple.Tuple2;
-import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.util.CollectionUtils;
 
@@ -34,26 +30,47 @@ import java.util.TreeMap;
  */
 @Getter
 @Setter
-public class PropertiesErrorDefinitionRegister implements ErrorDefinitionRegister, ApplicationContextAware,
-        InitializingBean, DefaultOrdered {
+public class PropertiesErrorDefinitionRegister extends AbstractComponent implements ErrorDefinitionRegister {
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesErrorDefinitionRegister.class);
 
+    /**
+     * Key: 优先级。
+     */
     public static final String KEY_ORDER = "order";
 
+    /**
+     * Key: 错误编码。
+     */
     public static final String KEY_CODE = "code";
 
+    /**
+     * Key: 错误消息。
+     */
     public static final String KEY_MESSAGE = "message";
 
+    /**
+     * Key: 用户提示。
+     */
     public static final String KEY_USER_TIP = "userTip";
 
+    /**
+     * Key: 附加数据。
+     */
     public static final String KEY_TAGS = "tags";
 
+    /**
+     * Key: 临时数据。
+     */
     public static final String KEY_TEMPS = "temps";
 
+    /**
+     * 通配符。
+     */
     public static final char CHAR_WILDCARD = '*';
 
-    private ApplicationContext applicationContext;
-
+    /**
+     * 错误定义的设置。
+     */
     private ErrorDefinitionProperties properties;
 
     @Override
@@ -74,7 +91,7 @@ public class PropertiesErrorDefinitionRegister implements ErrorDefinitionRegiste
         // 解析资源
         Resource[] resources = null;
         try {
-            resources = this.applicationContext.getResources(location);
+            resources = this.getApplicationContext().getResources(location);
         } catch (IOException ex) {
             if (this.properties.isFailFast()) {
                 throw new ExtendedRuntimeException("failed to resolve location pattern: " + location, ex)
@@ -199,8 +216,19 @@ public class PropertiesErrorDefinitionRegister implements ErrorDefinitionRegiste
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("applicationContext", this.getApplicationContext());
-        AssertState.Named.notNull("properties", this.getProperties());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 properties
+        this.initProperties();
+    }
+
+    /**
+     * 初始化 properties。
+     */
+    protected void initProperties() {
+        if (this.properties == null) {
+            this.properties = this.getBean(ErrorDefinitionProperties.class);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.wingsweaver.kuja.common.utils.model.attributes;
 
+import com.wingsweaver.kuja.common.utils.support.tostring.DontReflect;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,12 +16,13 @@ import java.util.function.Function;
  * @param <K> 属性名称的类型
  * @author wingsweaver
  */
+@DontReflect
 public class MapAttributes<K> implements Attributes<K> {
     /**
      * 空的属性字典。
      */
     @SuppressWarnings("rawtypes")
-    static final Attributes EMPTY = new MapAttributes<>(null);
+    static final Attributes EMPTY = new MapAttributes<>();
 
     /**
      * 不存在的属性的值。
@@ -31,9 +34,20 @@ public class MapAttributes<K> implements Attributes<K> {
      */
     private Map<K, Object> map;
 
+    public MapAttributes() {
+        this.map = null;
+    }
+
     @SuppressWarnings("unchecked")
     public MapAttributes(Map<K, ?> map) {
         this.map = (Map<K, Object>) map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public MapAttributes(Attributes<K> attributes) {
+        if (attributes != null) {
+            this.map = (Map<K, Object>) attributes.asMap();
+        }
     }
 
     @Override

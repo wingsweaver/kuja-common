@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webflux.filter;
 
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogContext;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.model.ValueWrapper;
 import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
 import com.wingsweaver.kuja.common.web.utils.LogContextConfigBuilder;
@@ -9,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
  */
 @Getter
 @Setter
-public class DynamicLogContextWebFilter implements WebFilter, InitializingBean, DefaultOrdered {
+public class DynamicLogContextWebFilter extends AbstractComponent implements WebFilter, DefaultOrdered {
     private static final Logger LOGGER = LoggerFactory.getLogger(DynamicLogContextWebFilter.class);
 
     @Override
@@ -52,11 +52,6 @@ public class DynamicLogContextWebFilter implements WebFilter, InitializingBean, 
         if (threadTuple.getValue() == Thread.currentThread()) {
             LogContext.removeConfig();
         }
-    }
-
-    @Override
-    public void afterPropertiesSet() {
-        // 暂时什么也不做
     }
 
     @Override

@@ -12,8 +12,6 @@ import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,15 +23,16 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class AppInfoReturnValueCustomizer extends AbstractOneTimeReturnValueCustomizer implements ApplicationContextAware {
+public class AppInfoReturnValueCustomizer extends AbstractOneTimeReturnValueCustomizer {
+    /**
+     * Key: APP 信息。
+     */
     public static final String KEY_APP_INFO = "appInfo";
 
-    public static final String INCLUDES_KEY_PREFIX = "return-value.app-info";
-
     /**
-     * 应用程序上下文。
+     * 包含设置的前缀。
      */
-    private ApplicationContext applicationContext;
+    public static final String INCLUDES_KEY_PREFIX = "return-value.app-info";
 
     /**
      * App 信息。
@@ -81,7 +80,7 @@ public class AppInfoReturnValueCustomizer extends AbstractOneTimeReturnValueCust
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
         // 检查 settings 是否设置
@@ -91,7 +90,7 @@ public class AppInfoReturnValueCustomizer extends AbstractOneTimeReturnValueCust
         if (this.getAppInfo() == null) {
             try {
                 AssertState.Named.notNull("applicationContext", this.getApplicationContext());
-                this.appInfo = this.applicationContext.getBean(AppInfo.class);
+                this.appInfo = this.getBean(AppInfo.class);
             } catch (Exception ex) {
                 throw new IllegalStateException("Cannot find AppInfo bean", ex);
             }

@@ -1,11 +1,10 @@
 package com.wingsweaver.kuja.common.webflux.support;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.webflux.util.ServerWebExchangeUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
@@ -19,7 +18,7 @@ import reactor.core.publisher.Mono;
  */
 @Getter
 @Setter
-public class BusinessContextHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver, InitializingBean {
+public class BusinessContextHandlerMethodArgumentResolver extends AbstractComponent implements HandlerMethodArgumentResolver {
     /**
      * 业务上下文工厂类的实例。
      */
@@ -45,7 +44,19 @@ public class BusinessContextHandlerMethodArgumentResolver implements HandlerMeth
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 businessContextFactory
+        this.initBusinessContextFactory();
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = this.getBean(ServerWebExchangeBusinessContextFactory.class);
+        }
     }
 }

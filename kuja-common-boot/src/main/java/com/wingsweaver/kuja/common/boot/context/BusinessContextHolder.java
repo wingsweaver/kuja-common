@@ -108,6 +108,11 @@ public final class BusinessContextHolder {
          */
         private final BusinessContext oldContext;
 
+        /**
+         * 构造函数。
+         *
+         * @param context 临时使用的业务上下文
+         */
         public TempHolder(BusinessContext context) {
             this.oldContext = getCurrent();
             setCurrent(context);

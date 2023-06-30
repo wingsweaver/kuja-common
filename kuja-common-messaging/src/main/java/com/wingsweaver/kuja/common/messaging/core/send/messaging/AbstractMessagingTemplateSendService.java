@@ -197,7 +197,7 @@ public abstract class AbstractMessagingTemplateSendService<D, T extends Abstract
      */
     protected void initMessagingTemplate() {
         if (this.messagingTemplate == null) {
-            this.messagingTemplate = this.getApplicationContext().getBean(this.getMessagingTemplateType());
+            this.messagingTemplate = this.getBean(this.getMessagingTemplateType());
         }
     }
 

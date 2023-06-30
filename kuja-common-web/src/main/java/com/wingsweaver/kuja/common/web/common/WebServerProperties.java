@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.web.common;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import com.wingsweaver.kuja.common.web.constants.KujaCommonWebKeys;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = KujaCommonWebKeys.PREFIX_SERVER_PROPERTIES)
-public class WebServerProperties {
+public class WebServerProperties extends AbstractPojo {
     /**
      * 是否大小写敏感。
      */

@@ -4,9 +4,12 @@ import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
 import com.wingsweaver.kuja.common.messaging.core.send.messaging.AbstractMessagingTemplateSendService;
 import com.wingsweaver.kuja.common.utils.exception.ExtendedRuntimeException;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.ObjectUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
 import javax.jms.Destination;
@@ -18,8 +21,11 @@ import javax.jms.Destination;
  */
 @Getter
 @Setter
+@SuppressWarnings("PMD.GuardLogStatement")
 public class JmsJeeMessagingTemplateSendService extends
         AbstractMessagingTemplateSendService<Destination, JmsMessagingTemplate, JmsMessageSendOptions> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JmsJeeMessagingTemplateSendService.class);
+
     /**
      * 是否从 bean 中解析消息目的地。
      */
@@ -32,7 +38,7 @@ public class JmsJeeMessagingTemplateSendService extends
         // 如果是字符串的话，尝试从 Bean 中获取
         if (destination instanceof CharSequence && this.resolveDestinationFromBean) {
             try {
-                destination = this.getApplicationContext().getBean(destination.toString(), Destination.class);
+                destination = this.getBean(destination.toString(), Destination.class, true);
             } catch (Exception ignored) {
                 // 忽略此错误
             }
@@ -51,9 +57,11 @@ public class JmsJeeMessagingTemplateSendService extends
     protected void sendMessage(MessageSendContext context, JmsMessageSendOptions options, MessageSendCallback callback) {
         Object destination = ObjectUtil.notNullOr(options.getDestination(), this.getMessagingTemplate()::getDefaultDestination);
         if (destination instanceof Destination) {
+            LogUtil.trace(LOGGER, "Send JMS message to destination: {}, context id = {}", destination, context.getId());
             this.getMessagingTemplate().convertAndSend((Destination) destination, options.getPayload(), options.getHeaders(),
                     options.getPostProcessor());
         } else if (destination instanceof String) {
+            LogUtil.trace(LOGGER, "Send JMS message to destination name: {}, context id = {}", destination, context.getId());
             this.getMessagingTemplate().convertAndSend((String) destination, options.getPayload(), options.getHeaders(),
                     options.getPostProcessor());
         } else {

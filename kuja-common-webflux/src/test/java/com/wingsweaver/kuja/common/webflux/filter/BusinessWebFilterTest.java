@@ -1,8 +1,8 @@
 package com.wingsweaver.kuja.common.webflux.filter;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
-import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
+import com.wingsweaver.kuja.common.boot.context.DefaultBusinessContextFactory;
 import com.wingsweaver.kuja.common.webflux.constants.KujaCommonWebFluxOrders;
 import com.wingsweaver.kuja.common.webflux.support.ServerWebExchangeBusinessContextFactory;
 import com.wingsweaver.kuja.common.webflux.util.ServerWebExchangeUtil;
@@ -25,9 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class BusinessWebFilterTest {
 
     @Test
-    void filter() {
+    void filter() throws Exception {
+        DefaultBusinessContextFactory businessContextFactory2 = new DefaultBusinessContextFactory();
+        businessContextFactory2.afterPropertiesSet();
+
         ServerWebExchangeBusinessContextFactory businessContextFactory = new ServerWebExchangeBusinessContextFactory();
-        businessContextFactory.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
+        businessContextFactory.setBusinessContextFactory(businessContextFactory2);
         businessContextFactory.setBusinessContextCustomizers(Collections.emptyList());
         businessContextFactory.afterPropertiesSet();
 
@@ -49,7 +52,7 @@ class BusinessWebFilterTest {
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         BusinessWebFilter filter = new BusinessWebFilter();
         assertNull(filter.getBusinessContextFactory());
         ServerWebExchangeBusinessContextFactory businessContextFactory = new ServerWebExchangeBusinessContextFactory();

@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.web.context;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.web.wrapper.MockWebRequestWrapper;
 import com.wingsweaver.kuja.common.web.wrapper.MockWebResponseWrapper;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class WebContextAccessorTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         WebContextAccessor accessor = new WebContextAccessor(businessContext);
 
         // originalRequest

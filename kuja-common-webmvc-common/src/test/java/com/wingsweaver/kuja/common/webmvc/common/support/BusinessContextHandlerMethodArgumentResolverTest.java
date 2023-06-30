@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webmvc.common.support;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
@@ -32,7 +33,7 @@ class BusinessContextHandlerMethodArgumentResolverTest {
         NativeWebRequest webRequest = new ServletWebRequest(servletRequest);
         assertNull(argumentResolver.resolveArgument(null, null, webRequest, null));
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         servletRequest.setAttribute(BusinessContextHandlerMethodArgumentResolver.KEY_BUSINESS_CONTEXT, businessContext);
         assertSame(businessContext, argumentResolver.resolveArgument(null, null, webRequest, null));
     }

@@ -38,4 +38,19 @@ public interface KujaCommonBootOrders {
      * {@link com.wingsweaver.kuja.common.boot.env.postprocessor.RemoveInheritedEnvironmentPostProcessor}。
      */
     int REMOVE_INHERITED_ENVIRONMENT_POST_PROCESSOR = Orders.LOWEST_PRECEDENCE - Orders.STEP_TINY;
+
+    /**
+     * {@link com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultFallbackEnvironmentProcessor}。
+     */
+    int DEFAULT_FALLBACK_ENVIRONMENT_PROCESSOR = Orders.LOWEST_PRECEDENCE - Orders.STEP_HUGE;
+
+    /**
+     * {@link com.wingsweaver.kuja.common.boot.appinfo.AppInfoFallbackEnvironmentProcessor}。
+     */
+    int APP_INFO_FALLBACK_ENVIRONMENT_PROCESSOR = DEFAULT_FALLBACK_ENVIRONMENT_PROCESSOR + Orders.STEP_LARGE;
+
+    /**
+     * {@link com.wingsweaver.kuja.common.boot.errorreporting.ReportingErrorHandler}。
+     */
+    int REPORTING_ERROR_HANDLER = Orders.HIGHEST_PRECEDENCE + Orders.STEP_LARGE;
 }

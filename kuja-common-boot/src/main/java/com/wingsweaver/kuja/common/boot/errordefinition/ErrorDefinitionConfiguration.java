@@ -20,6 +20,12 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ErrorDefinitionProperties.class)
 public class ErrorDefinitionConfiguration extends AbstractConfiguration {
+    /**
+     * 生成 ErrorDefinitionRepository 的 Bean。
+     *
+     * @param errorDefinitionRegisters 错误定义注册器的集合
+     * @return ErrorDefinitionRepository 的 Bean
+     */
     @Bean
     @ConditionalOnMissingBean
     public ErrorDefinitionRepository errorDefinitionRepository(ObjectProvider<ErrorDefinitionRegister> errorDefinitionRegisters) {
@@ -31,16 +37,32 @@ public class ErrorDefinitionConfiguration extends AbstractConfiguration {
         return repository;
     }
 
+    /**
+     * 生成 BeanErrorDefinitionRegister 的 Bean。
+     *
+     * @return BeanErrorDefinitionRegister 的 Bean
+     */
     @Bean
     public BeanErrorDefinitionRegister beanErrorDefinitionRegister() {
         return new BeanErrorDefinitionRegister();
     }
 
+    /**
+     * 生成 AnnotationBeanErrorDefinitionRegister 的 Bean。
+     *
+     * @return AnnotationBeanErrorDefinitionRegister 的 Bean
+     */
     @Bean
     public AnnotationBeanErrorDefinitionRegister annotationBeanErrorDefinitionRegister() {
         return new AnnotationBeanErrorDefinitionRegister();
     }
 
+    /**
+     * 生成 PropertiesErrorDefinitionRegister 的 Bean。
+     *
+     * @param properties 错误定义的属性
+     * @return PropertiesErrorDefinitionRegister 的 Bean
+     */
     @Bean
     public PropertiesErrorDefinitionRegister propertiesErrorDefinitionRegister(ErrorDefinitionProperties properties) {
         PropertiesErrorDefinitionRegister register = new PropertiesErrorDefinitionRegister();
@@ -48,6 +70,13 @@ public class ErrorDefinitionConfiguration extends AbstractConfiguration {
         return register;
     }
 
+    /**
+     * 生成 ErrorDefinitionAttributes 的 Bean。
+     *
+     * @param messageHelper 消息辅助器
+     * @param properties    错误定义的属性
+     * @return ErrorDefinitionAttributes 的 Bean
+     */
     @Bean
     @ConditionalOnMissingBean
     public ErrorDefinitionAttributes errorDefinitionAttributes(MessageHelper messageHelper,

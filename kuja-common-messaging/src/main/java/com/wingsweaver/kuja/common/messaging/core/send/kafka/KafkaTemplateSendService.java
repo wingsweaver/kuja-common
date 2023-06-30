@@ -4,8 +4,11 @@ import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContextAccessor;
 import com.wingsweaver.kuja.common.messaging.core.send.common.AbstractMessageSendService;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -17,8 +20,10 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @Getter
 @Setter
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "PMD.GuardLogStatement"})
 public class KafkaTemplateSendService extends AbstractMessageSendService<KafkaMessageSendOptions> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTemplateSendService.class);
+
     /**
      * KafkaTemplate 实例。
      */
@@ -35,8 +40,10 @@ public class KafkaTemplateSendService extends AbstractMessageSendService<KafkaMe
         ListenableFuture<SendResult<String, Object>> future;
         String topic = options.getTopic();
         if (topic != null) {
+            LogUtil.trace(LOGGER, "Send Kafka message to topic: {}, context id = {}", topic, context.getId());
             future = this.kafkaTemplate.send(topic, options.getPayload());
         } else {
+            LogUtil.trace(LOGGER, "Send Kafka message to default topic, context id = {}", context.getId());
             future = this.kafkaTemplate.sendDefault(options.getPayload());
         }
 
@@ -95,7 +102,7 @@ public class KafkaTemplateSendService extends AbstractMessageSendService<KafkaMe
     @SuppressWarnings("unchecked")
     protected void initKafkaTemplate() {
         if (this.kafkaTemplate == null) {
-            this.kafkaTemplate = this.getApplicationContext().getBean(KafkaTemplate.class);
+            this.kafkaTemplate = this.getBean(KafkaTemplate.class);
         }
     }
 }

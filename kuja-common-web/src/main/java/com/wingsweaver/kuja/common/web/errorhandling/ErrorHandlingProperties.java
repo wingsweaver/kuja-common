@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.web.errorhandling;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import com.wingsweaver.kuja.common.web.constants.KujaCommonWebKeys;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = KujaCommonWebKeys.PREFIX_ERROR_HANDLING_PROPERTIES)
-public class ErrorHandlingProperties {
+public class ErrorHandlingProperties extends AbstractPojo {
     /**
      * 全局错误处理 {@link org.springframework.web.bind.annotation.ControllerAdvice} 相关的属性。
      */
@@ -32,7 +33,7 @@ public class ErrorHandlingProperties {
      */
     @Getter
     @Setter
-    public static class GlobalErrorAdviceProperties {
+    public static class GlobalErrorAdviceProperties extends AbstractPojo {
         /**
          * 是否启用。
          */
@@ -44,7 +45,7 @@ public class ErrorHandlingProperties {
      */
     @Getter
     @Setter
-    public static class GlobalErrorControllerProperties {
+    public static class GlobalErrorControllerProperties extends AbstractPojo {
         /**
          * 是否启用。
          */

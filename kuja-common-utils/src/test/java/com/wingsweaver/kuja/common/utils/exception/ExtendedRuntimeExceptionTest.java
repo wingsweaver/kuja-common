@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExtendedRuntimeExceptionTest {
     PrintStream printStream = System.out;
@@ -21,8 +21,8 @@ class ExtendedRuntimeExceptionTest {
     void test() {
         ExtendedRuntimeException exception = new ExtendedRuntimeException();
         assertNotNull(exception.extendedMap());
-        assertTrue(exception.extendedMap().isEmpty());
-        assertTrue(exception.extendedKeys().isEmpty());
+        assertFalse(exception.extendedMap().isEmpty());
+        assertFalse(exception.extendedKeys().isEmpty());
         exception.printStackTrace(printStream);
 
         exception.removeExtendedAttribute("id");

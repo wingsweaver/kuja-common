@@ -22,6 +22,7 @@ public class ReturnValueT<T> extends ReturnValue {
     public void load(ReturnValue other, boolean overwrite) {
         super.load(other, overwrite);
 
+        // 导入 data
         if (other instanceof ReturnValueT) {
             if (overwrite || this.data == null) {
                 this.data = ((ReturnValueT<T>) other).getData();

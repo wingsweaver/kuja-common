@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,7 +15,7 @@ class DefaultErrorHandlerContextTest {
         DefaultErrorHandlerContext context = new DefaultErrorHandlerContext();
 
         assertNull(context.getBusinessContext());
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         context.setBusinessContext(businessContext);
         assertSame(businessContext, context.getBusinessContext());
 

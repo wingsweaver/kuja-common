@@ -1,16 +1,15 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
-import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
+import com.wingsweaver.kuja.common.utils.model.AbstractTagsTemps;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
+import com.wingsweaver.kuja.common.utils.support.tostring.ToStringIgnored;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,10 +19,9 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DefaultErrorDefinition implements ErrorDefinition {
+public class DefaultErrorDefinition extends AbstractTagsTemps implements ErrorDefinition {
     /**
      * 错误定义的优先度。
      */
@@ -43,16 +41,6 @@ public class DefaultErrorDefinition implements ErrorDefinition {
      * 用户提示（面向终端用户）。
      */
     private String userTip;
-
-    /**
-     * 附加数据。
-     */
-    private Map<String, Object> tags;
-
-    /**
-     * 临时数据。
-     */
-    private Map<String, Object> temps;
 
     /**
      * 从另一个 {@link ErrorDefinition} 实例中加载数据。
@@ -126,19 +114,86 @@ public class DefaultErrorDefinition implements ErrorDefinition {
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
-    public Map<String, Object> getTags(boolean createIfAbsent) {
-        if (this.tags == null && createIfAbsent) {
-            this.tags = new HashMap<>(BufferSizes.SMALL);
-        }
-        return this.tags;
+    @Override
+    @ToStringIgnored
+    public Map<String, Object> getTemps() {
+        return this.getTemps(false);
     }
 
-    @SuppressWarnings("SameParameterValue")
-    public Map<String, Object> getTemps(boolean createIfAbsent) {
-        if (this.temps == null && createIfAbsent) {
-            this.temps = new HashMap<>(BufferSizes.SMALL);
+    /**
+     * 生成 Builder 实例。
+     *
+     * @return Builder 实例
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * {@link ErrorDefinition} 的生成工具类。
+     */
+    public static final class Builder extends InnerBuilder<Builder> {
+        // 什么也不做
+    }
+
+    /**
+     * {@link ErrorDefinition} 的内部生成工具类。
+     */
+    protected static class InnerBuilder<B> extends AbstractTagsTemps.InnerBuilder<B> {
+        /**
+         * 错误定义的优先度。
+         */
+        protected int order;
+
+        /**
+         * 错误编码。
+         */
+        protected String code;
+
+        /**
+         * 错误消息（面向开发者）。
+         */
+        protected String message;
+
+        /**
+         * 用户提示（面向终端用户）。
+         */
+        protected String userTip;
+
+        @SuppressWarnings("unchecked")
+        public B order(int order) {
+            this.order = order;
+            return (B) this;
         }
-        return this.temps;
+
+        @SuppressWarnings("unchecked")
+        public B code(String code) {
+            this.code = code;
+            return (B) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public B message(String message) {
+            this.message = message;
+            return (B) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public B userTip(String userTip) {
+            this.userTip = userTip;
+            return (B) this;
+        }
+
+        /**
+         * 构建 {@link DefaultErrorDefinition} 实例。
+         *
+         * @return DefaultErrorDefinition 实例
+         */
+        public DefaultErrorDefinition build() {
+            DefaultErrorDefinition errorDefinition = new DefaultErrorDefinition(this.order, this.code, this.message, this.userTip);
+            errorDefinition.setTags(tags);
+            errorDefinition.setTemps(temps);
+            return errorDefinition;
+        }
     }
 }

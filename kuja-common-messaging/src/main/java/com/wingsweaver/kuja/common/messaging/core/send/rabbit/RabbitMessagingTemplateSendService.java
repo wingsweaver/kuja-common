@@ -3,10 +3,13 @@ package com.wingsweaver.kuja.common.messaging.core.send.rabbit;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
 import com.wingsweaver.kuja.common.messaging.core.send.messaging.AbstractMessagingTemplateSendService;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.ObjectUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 
 import java.util.List;
@@ -18,8 +21,11 @@ import java.util.List;
  */
 @Getter
 @Setter
+@SuppressWarnings("PMD.GuardLogStatement")
 public class RabbitMessagingTemplateSendService extends
         AbstractMessagingTemplateSendService<String, RabbitMessagingTemplate, RabbitMessageSendOptions> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMessagingTemplateSendService.class);
+
     /**
      * 默认的 routingKey。
      */
@@ -79,6 +85,8 @@ public class RabbitMessagingTemplateSendService extends
     protected void sendMessage(MessageSendContext context, RabbitMessageSendOptions options, MessageSendCallback callback) {
         Object destination = ObjectUtil.notNullOr(options.getDestination(), this.getMessagingTemplate()::getDefaultDestination);
         String routeKey = StringUtil.notEmptyOr(options.getRoutingKey(), this.defaultRoutingKey);
+        LogUtil.trace(LOGGER, "Send RabbitMQ message to destination: {}, routing key: {}, context id = {}",
+                destination, routeKey, context.getId());
         this.getMessagingTemplate().convertAndSend(destination.toString(), routeKey, options.getPayload(), options.getHeaders(),
                 options.getPostProcessor());
     }

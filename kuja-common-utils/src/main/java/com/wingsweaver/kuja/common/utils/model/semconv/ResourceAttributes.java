@@ -850,6 +850,11 @@ public interface ResourceAttributes {
              * IBM z/OS。
              */
             String Z_OS = "z_os";
+
+            /**
+             * 其他操作系统。
+             */
+            String OTHERS = "others";
         }
 
         /**

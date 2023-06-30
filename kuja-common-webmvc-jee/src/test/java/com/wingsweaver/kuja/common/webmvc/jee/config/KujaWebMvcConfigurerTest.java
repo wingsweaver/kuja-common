@@ -51,7 +51,7 @@ class KujaWebMvcConfigurerTest {
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         KujaWebMvcConfigurer configurer = new KujaWebMvcConfigurer();
         assertNull(configurer.getProperties());
         WebServerProperties properties = new WebServerProperties();

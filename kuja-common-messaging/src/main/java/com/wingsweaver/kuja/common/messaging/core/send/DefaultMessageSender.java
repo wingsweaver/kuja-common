@@ -1,14 +1,16 @@
 package com.wingsweaver.kuja.common.messaging.core.send;
 
-import com.wingsweaver.kuja.common.boot.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.exception.ExtendedRuntimeException;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.idgen.StringIdGenerator;
-import com.wingsweaver.kuja.common.utils.support.idgen.UuidStringIdGenerator;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * 默认的 {@link MessageSender} 实现类。
@@ -18,10 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 public class DefaultMessageSender extends AbstractComponent implements MessageSender {
-    /**
-     * 默认的 {@link StringIdGenerator} 实例。
-     */
-    public static final StringIdGenerator DEFAULT_ID_GENERATOR = new UuidStringIdGenerator();
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMessageSender.class);
 
     /**
      * 消息发送服务的实例列表。
@@ -37,6 +36,12 @@ public class DefaultMessageSender extends AbstractComponent implements MessageSe
      * 消息发送上下文的定制器的实例列表。
      */
     private List<MessageSendContextCustomizer> sendContextCustomizers;
+
+    /**
+     * 用于发送消息的 Executor。<br>
+     * 如果设置的话，消息发送将会在该 Executor 中异步执行，否则将会在当前线程中同步执行。
+     */
+    private Executor sendExecutor;
 
     @Override
     public void send(Object message, MessageSendCallback callback) {
@@ -60,10 +65,10 @@ public class DefaultMessageSender extends AbstractComponent implements MessageSe
 
         // 创建消息发送的上下文
         MessageSendContext context = new MessageSendContext();
-        context.setContextId(this.contextIdGenerator.nextId());
-        context.setCreationTimeUtc(new Date());
+        context.setId(this.contextIdGenerator.nextId());
         context.setOriginalMessage(message);
 
+        // 使用 MessageSendContextAccessor 进行设置
         MessageSendContextAccessor contextAccessor = new MessageSendContextAccessor(context);
         contextAccessor.setSendThread(Thread.currentThread());
         contextAccessor.setMessageSender(this);
@@ -74,7 +79,27 @@ public class DefaultMessageSender extends AbstractComponent implements MessageSe
         this.initSendContext(context);
 
         // 执行发送
-        sendService.send(context, callback);
+        this.doSend(context, sendService, callback);
+    }
+
+    /**
+     * 执行发送处理。
+     *
+     * @param context     消息发送上下文
+     * @param sendService 消息发送服务
+     * @param callback    消息发送回调
+     */
+    @SuppressWarnings("PMD.GuardLogStatement")
+    protected void doSend(MessageSendContext context, MessageSendService sendService, MessageSendCallback callback) {
+        if (this.sendExecutor != null) {
+            this.sendExecutor.execute(() -> {
+                LogUtil.trace(LOGGER, "Sending message asynchronously, send service: {}, context: {}", sendService, context.getId());
+                sendService.send(context, callback);
+            });
+        } else {
+            LogUtil.trace(LOGGER, "Sending message synchronously, send service: {}, context: {}", sendService, context.getId());
+            sendService.send(context, callback);
+        }
     }
 
     @Override
@@ -135,7 +160,7 @@ public class DefaultMessageSender extends AbstractComponent implements MessageSe
      */
     protected void initContextIdGenerator() {
         if (this.contextIdGenerator == null) {
-            this.contextIdGenerator = DEFAULT_ID_GENERATOR;
+            this.contextIdGenerator = this.getBean(StringIdGenerator.class, () -> StringIdGenerator.FALLBACK);
         }
     }
 

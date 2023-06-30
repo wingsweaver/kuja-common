@@ -21,6 +21,14 @@ import java.util.stream.Collectors;
 @EnableKujaI18n
 @EnableKujaErrorDefinition
 public class ExceptionConfiguration extends AbstractConfiguration {
+    /**
+     * 生成 BusinessExceptionFactory 的 Bean。
+     *
+     * @param errorDefinitionAttributes ErrorDefinitionAttributes
+     * @param errorDefinitionRepository ErrorDefinitionRepository
+     * @param exceptionCustomizers      BusinessExceptionCustomizer 的集合
+     * @return BusinessExceptionFactory 的 Bean
+     */
     @Bean
     @ConditionalOnMissingBean
     public BusinessExceptionFactory businessExceptionFactory(

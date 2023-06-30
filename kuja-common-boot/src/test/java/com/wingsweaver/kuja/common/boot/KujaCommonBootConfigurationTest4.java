@@ -7,6 +7,7 @@ import com.wingsweaver.kuja.common.boot.exception.BusinessExceptionFactory;
 import com.wingsweaver.kuja.common.boot.i18n.MessageHelper;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueFactory;
+import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueProperties;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueT;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(SpringExtension.class)
@@ -43,46 +43,51 @@ class KujaCommonBootConfigurationTest4 {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private ReturnValueProperties returnValueProperties;
+
     @Test
     void testReturnValueFactory() {
+        ReturnValue success = this.returnValueProperties.getSuccess();
 
         {
             ReturnValue returnValue = returnValueFactory.success();
-            assertNull(returnValue.getCode());
-            assertNull(returnValue.getMessage());
-            assertNull(returnValue.getUserTip());
-            assertNull(returnValue.getTags());
-            assertNull(returnValue.getTemps(false));
+            assertEquals(success.getCode(), returnValue.getCode());
+            assertEquals(success.getMessage(), returnValue.getMessage());
+            assertEquals(success.getUserTip(), returnValue.getUserTip());
+            assertEquals(success.getTags(), returnValue.getTags());
+            assertEquals(success.getTags(false), returnValue.getTemps(false));
         }
 
         {
             Object data = new Object();
             ReturnValueT<?> returnValue = returnValueFactory.success(data);
             assertSame(data, returnValue.getData());
-            assertNull(returnValue.getCode());
-            assertNull(returnValue.getMessage());
-            assertNull(returnValue.getUserTip());
-            assertNull(returnValue.getTags());
-            assertNull(returnValue.getTemps(false));
+            assertEquals(success.getCode(), returnValue.getCode());
+            assertEquals(success.getMessage(), returnValue.getMessage());
+            assertEquals(success.getUserTip(), returnValue.getUserTip());
+            assertEquals(success.getTags(), returnValue.getTags());
+            assertEquals(success.getTags(false), returnValue.getTemps(false));
         }
 
+        ReturnValue fail = this.returnValueProperties.getFail();
         {
             ReturnValue returnValue = returnValueFactory.fail();
-            assertNull(returnValue.getCode());
-            assertNull(returnValue.getMessage());
-            assertNull(returnValue.getUserTip());
-            assertNull(returnValue.getTags());
-            assertNull(returnValue.getTemps(false));
+            assertEquals(fail.getCode(), returnValue.getCode());
+            assertEquals(fail.getMessage(), returnValue.getMessage());
+            assertEquals(fail.getUserTip(), returnValue.getUserTip());
+            assertEquals(fail.getTags(), returnValue.getTags());
+            assertEquals(fail.getTags(false), returnValue.getTemps(false));
         }
 
         {
             Exception error = new Exception("some-error");
             ReturnValue returnValue = returnValueFactory.fail(error);
-            assertNull(returnValue.getCode());
+            assertEquals(fail.getCode(), returnValue.getCode());
             assertEquals("some-error", returnValue.getMessage());
-            assertEquals("some-error", returnValue.getUserTip());
-            assertNull(returnValue.getTags());
-            assertNull(returnValue.getTemps(false));
+            assertEquals(fail.getUserTip(), returnValue.getUserTip());
+            assertEquals(fail.getTags(), returnValue.getTags());
+            assertEquals(fail.getTags(false), returnValue.getTemps(false));
         }
 
         {

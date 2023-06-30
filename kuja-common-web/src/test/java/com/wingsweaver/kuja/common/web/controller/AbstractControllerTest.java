@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.web.controller;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.errordefinition.DefaultErrorDefinition;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinition;
 import com.wingsweaver.kuja.common.boot.exception.BusinessException;
@@ -50,7 +51,7 @@ class AbstractControllerTest {
 
     @Test
     void test() throws Throwable {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);
@@ -75,7 +76,7 @@ class AbstractControllerTest {
                 .userTip("error.userTip.1")
                 .build();
         BusinessException error = this.businessExceptionFactory.create(errorDefinition);
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
 
         LogContext.setLevel(Level.INFO);
         Object result = this.customController.onError(businessContext, error);

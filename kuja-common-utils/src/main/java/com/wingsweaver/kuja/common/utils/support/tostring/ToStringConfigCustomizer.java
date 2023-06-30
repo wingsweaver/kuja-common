@@ -11,7 +11,7 @@ public interface ToStringConfigCustomizer extends DefaultOrdered {
     /**
      * 定制 ToString 转换设置。
      *
-     * @param builder ToString 转换设置的生成器
+     * @param config ToStringConfig 实例
      */
-    void customize(ToStringConfig.Builder builder);
+    void customize(ToStringConfig config);
 }

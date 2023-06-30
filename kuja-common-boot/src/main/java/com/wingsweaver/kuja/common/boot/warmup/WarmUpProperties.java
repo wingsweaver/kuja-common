@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
 import com.wingsweaver.kuja.common.boot.constants.KujaCommonBootKeys;
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,7 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = KujaCommonBootKeys.PREFIX_WARM_UP_PROPERTIES)
-public class WarmUpProperties {
+public class WarmUpProperties extends AbstractPojo {
     /**
      * 是否启用。
      */

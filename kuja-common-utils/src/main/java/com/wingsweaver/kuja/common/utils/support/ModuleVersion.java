@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.utils.support;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.jar.Manifest;
  *
  * @author wingsweaver
  */
-public final class ModuleVersion {
+public final class ModuleVersion extends AbstractPojo {
     private static final ModuleVersion EMPTY = new ModuleVersion(null, null, null);
 
     private final String artifactId;

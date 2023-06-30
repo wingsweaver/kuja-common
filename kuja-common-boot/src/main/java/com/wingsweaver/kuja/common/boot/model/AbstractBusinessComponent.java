@@ -8,13 +8,11 @@ import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueFactory;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueT;
 import com.wingsweaver.kuja.common.utils.diag.AssertArgs;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 业务组件的基类。<br><br>
@@ -29,12 +27,19 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public abstract class AbstractBusinessComponent extends AbstractComponent {
-    @Autowired
+    /**
+     * ReturnValueFactory 实例。
+     */
     private ReturnValueFactory returnValueFactory;
 
-    @Autowired
+    /**
+     * BusinessExceptionFactory 实例。
+     */
     private BusinessExceptionFactory businessExceptionFactory;
 
+    /**
+     * ErrorDefinition2ReturnValuePatcher 实例的列表。
+     */
     private List<ErrorDefinition2ReturnValuePatcher> errorDefinition2ReturnValuePatchers;
 
     /**
@@ -91,6 +96,7 @@ public abstract class AbstractBusinessComponent extends AbstractComponent {
      * 补全返回值中的成功信息。
      *
      * @param returnValue 返回值
+     * @param error       发生的错误
      */
     protected void patchFail(ReturnValue returnValue, Throwable error) {
         // 针对 BusinessException，先使用 errorDefinition2ReturnValuePatchers 补全返回值
@@ -251,15 +257,40 @@ public abstract class AbstractBusinessComponent extends AbstractComponent {
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
-        AssertState.Named.notNull("returnValueFactory", this.getReturnValueFactory());
-        AssertState.Named.notNull("businessExceptionFactory", this.getBusinessExceptionFactory());
+        // 初始化 returnValueFactory
+        this.initReturnValueFactory();
+
+        // 初始化 businessExceptionFactory
+        this.initBusinessExceptionFactory();
 
         // 初始化 errorDefinition2ReturnValuePatchers
+        this.initErrorDefinition2ReturnValuePatchers();
+    }
+
+    /**
+     * 初始化 errorDefinition2ReturnValuePatchers。
+     */
+    protected void initErrorDefinition2ReturnValuePatchers() {
         if (this.errorDefinition2ReturnValuePatchers == null) {
-            this.errorDefinition2ReturnValuePatchers = this.getApplicationContext()
-                    .getBeanProvider(ErrorDefinition2ReturnValuePatcher.class)
-                    .orderedStream()
-                    .collect(Collectors.toList());
+            this.errorDefinition2ReturnValuePatchers = this.getBeansOrdered(ErrorDefinition2ReturnValuePatcher.class);
+        }
+    }
+
+    /**
+     * 初始化 businessExceptionFactory。
+     */
+    protected void initBusinessExceptionFactory() {
+        if (this.businessExceptionFactory == null) {
+            this.businessExceptionFactory = this.getBean(BusinessExceptionFactory.class);
+        }
+    }
+
+    /**
+     * 初始化 returnValueFactory。
+     */
+    protected void initReturnValueFactory() {
+        if (this.returnValueFactory == null) {
+            this.returnValueFactory = this.getBean(ReturnValueFactory.class);
         }
     }
 }

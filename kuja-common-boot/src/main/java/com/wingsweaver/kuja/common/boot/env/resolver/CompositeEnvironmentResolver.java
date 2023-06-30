@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.boot.env.resolver;
 
+import lombok.Getter;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.util.LinkedList;
@@ -10,7 +11,11 @@ import java.util.List;
  *
  * @author wingsweaver
  */
+@Getter
 public class CompositeEnvironmentResolver implements EnvironmentResolver {
+    /**
+     * {@link EnvironmentResolver} 实例的列表。
+     */
     private final List<EnvironmentResolver> environmentResolvers = new LinkedList<>();
 
     @Override
@@ -23,9 +28,5 @@ public class CompositeEnvironmentResolver implements EnvironmentResolver {
             }
         }
         return environment;
-    }
-
-    public List<EnvironmentResolver> getEnvironmentResolvers() {
-        return environmentResolvers;
     }
 }

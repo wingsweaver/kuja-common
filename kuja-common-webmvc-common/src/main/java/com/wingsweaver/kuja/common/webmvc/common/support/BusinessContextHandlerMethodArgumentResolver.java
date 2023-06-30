@@ -2,6 +2,7 @@ package com.wingsweaver.kuja.common.webmvc.common.support;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -14,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  *
  * @author wingsweaver
  */
-public class BusinessContextHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public class BusinessContextHandlerMethodArgumentResolver extends AbstractComponent implements HandlerMethodArgumentResolver {
     public static final String KEY_BUSINESS_CONTEXT = ClassUtil.resolveKey(BusinessContext.class);
 
     @Override

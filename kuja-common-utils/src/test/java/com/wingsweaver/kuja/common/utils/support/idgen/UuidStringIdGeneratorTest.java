@@ -18,10 +18,10 @@ class UuidStringIdGeneratorTest {
         UuidStringIdGenerator idGenerator = new UuidStringIdGenerator();
 
         {
-            assertTrue(idGenerator.isWithHyphens());
+            assertFalse(idGenerator.isWithHyphens());
             String id = idGenerator.nextId();
-            assertEquals(36, id.length());
-            assertTrue(id.contains("-"));
+            assertEquals(32, id.length());
+            assertFalse(id.contains("-"));
         }
 
         {

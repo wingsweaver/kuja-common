@@ -37,6 +37,11 @@ public interface ToStringConstants {
     String TOKEN_VALUE = ": ";
 
     /**
+     * 省略号。
+     */
+    String TOKEN_OMIT = "...";
+
+    /**
      * null 数据。
      */
     String VALUE_NULL = "null";

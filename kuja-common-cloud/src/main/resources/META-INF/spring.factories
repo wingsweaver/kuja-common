@@ -1,4 +1,0 @@
-# ServiceRegistryWrapperFactory
-com.wingsweaver.kuja.common.cloud.serviceregistry.ServiceRegistryWrapperFactory=\
-com.wingsweaver.kuja.common.cloud.serviceregistry.DefaultServiceRegistryWrapperFactory
-

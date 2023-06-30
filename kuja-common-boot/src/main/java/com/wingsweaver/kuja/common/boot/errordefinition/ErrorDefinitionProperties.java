@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
 import com.wingsweaver.kuja.common.boot.constants.KujaCommonBootKeys;
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = KujaCommonBootKeys.PREFIX_ERROR_DEFINITION_PROPERTIES)
-public class ErrorDefinitionProperties {
+public class ErrorDefinitionProperties extends AbstractPojo {
     /**
      * 错误定义的资源。
      */

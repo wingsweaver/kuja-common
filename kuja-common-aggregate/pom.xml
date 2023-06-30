@@ -13,12 +13,15 @@
     <description>kuja-common 的编译结果聚集辅助项目</description>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven-install-plugin.skip>true</maven-install-plugin.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.wingsweaver.kuja</groupId>
             <artifactId>kuja-common-utils</artifactId>
             <version>${kuja-common.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.wingsweaver.kuja</groupId>
@@ -52,33 +55,11 @@
         </dependency>
         <dependency>
             <groupId>com.wingsweaver.kuja</groupId>
-            <artifactId>kuja-common-webmvc-jakarta</artifactId>
-            <version>${kuja-common.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.wingsweaver.kuja</groupId>
             <artifactId>kuja-common-messaging</artifactId>
             <version>${kuja-common.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.wingsweaver.kuja</groupId>
-            <artifactId>kuja-common-messaging-jakarta</artifactId>
-            <version>${kuja-common.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.wingsweaver.kuja</groupId>
-            <artifactId>kuja-common-cloud</artifactId>
-            <version>${kuja-common.version}</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
-
-    <properties>
-        <maven-install-plugin.skip>true</maven-install-plugin.skip>
-    </properties>
 
     <build>
         <plugins>
@@ -97,4 +78,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- JDK17 及以上，激活 kuja-spring-webmvc-jakarta -->
+        <profile>
+            <id>jdk17+</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.wingsweaver.kuja</groupId>
+                        <artifactId>kuja-common-webmvc-jakarta</artifactId>
+                        <version>${kuja-common.version}</version>
+                        <scope>compile</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.wingsweaver.kuja</groupId>
+                        <artifactId>kuja-common-messaging-jakarta</artifactId>
+                        <version>${kuja-common.version}</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
 </project>

@@ -4,8 +4,9 @@ import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextType;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.boot.context.BusinessContextTypeSetter;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.webflux.context.WebFluxContextAccessor;
 import com.wingsweaver.kuja.common.webflux.util.ServerWebExchangeUtil;
 import com.wingsweaver.kuja.common.webflux.wrapper.ServerHttpRequestWrapper;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ServerWebExchangeBusinessContextFactory implements InitializingBean {
+public class ServerWebExchangeBusinessContextFactory extends AbstractComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerWebExchangeBusinessContextFactory.class);
 
     /**
@@ -110,11 +110,15 @@ public class ServerWebExchangeBusinessContextFactory implements InitializingBean
      * @param businessContext 业务上下文
      */
     protected void initializeBusinessContext(ServerWebExchange exchange, BusinessContext businessContext) {
+        // 设置 BusinessContextType
+        if (businessContext instanceof BusinessContextTypeSetter) {
+            ((BusinessContextTypeSetter) businessContext).setContextType(BusinessContextType.Web.Reactive.WEB_FLUX);
+        }
+
+        // 按照 WebFluxContextAccessor 进行设置
+        WebFluxContextAccessor accessor = new WebFluxContextAccessor(businessContext);
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-
-        WebFluxContextAccessor accessor = new WebFluxContextAccessor(businessContext);
-        accessor.setContextType(BusinessContextType.Web.Reactive.WEB_FLUX);
         accessor.setOriginalRequest(request);
         accessor.setOriginalResponse(response);
         accessor.setRequestWrapper(new ServerHttpRequestWrapper(exchange, request));
@@ -122,13 +126,34 @@ public class ServerWebExchangeBusinessContextFactory implements InitializingBean
         accessor.setServerWebExchange(exchange);
         accessor.setServerHttpRequest(request);
         accessor.setServerHttpResponse(response);
-
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
-        AssertState.Named.notNull("businessContextCustomizers", this.getBusinessContextCustomizers());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 businessContextFactory
+        this.initBusinessContextFactory();
+
+        // 初始化 businessContextCustomizers
+        this.initBusinessContextCustomizers();
     }
 
+    /**
+     * 初始化 businessContextCustomizers。
+     */
+    private void initBusinessContextCustomizers() {
+        if (this.businessContextCustomizers == null) {
+            this.businessContextCustomizers = this.getBeansOrdered(BusinessContextCustomizer.class);
+        }
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = this.getBean(BusinessContextFactory.class);
+        }
+    }
 }

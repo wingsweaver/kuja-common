@@ -16,10 +16,21 @@ import java.nio.channels.ReadableByteChannel;
  * @author wingsweaver
  */
 public class OptionalResource implements Resource, Optional {
+    /**
+     * 可选（非必须） Resource 的前缀。
+     */
     public static final String PREFIX_OPTIONAL = "optional:";
 
+    /**
+     * 被包装的 Resource。
+     */
     private final Resource resource;
 
+    /**
+     * 构造函数。
+     *
+     * @param resource 被包装的 Resource
+     */
     public OptionalResource(Resource resource) {
         this.resource = resource;
     }
@@ -111,6 +122,11 @@ public class OptionalResource implements Resource, Optional {
         return this.resource.getInputStream();
     }
 
+    /**
+     * 获取被包装的 Resource。
+     *
+     * @return 被包装的 Resource
+     */
     public Resource getResource() {
         return resource;
     }

@@ -58,9 +58,10 @@ public final class ExtendedUtil {
         }
 
         // 输出扩展字段
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTypeName(false).setPublicOnly(true)
-                .build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTypeName(false);
+        config.setPublicOnly(true);
+
         printer.println("extended:");
         List<String> segments = new ArrayList<>(map.size());
         for (Map.Entry<String, Object> entry : map.entrySet()) {

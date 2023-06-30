@@ -1,16 +1,16 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
 import com.wingsweaver.kuja.common.utils.model.tuple.Tuple2;
+import com.wingsweaver.kuja.common.utils.support.idgen.StringIdGenerator;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.support.StaticApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,11 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class SyncWarmUpTaskExecutorTest {
     @Test
-    void test() {
+    void test() throws Exception {
+        ApplicationContext applicationContext = new StaticApplicationContext();
+        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(applicationContext);
         ApplicationEventPublisher eventPublisher = DummyApplicationEventPublisher.INSTANCE;
-        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(eventPublisher);
+        warmUpTaskExecutor.setEventPublisher(eventPublisher);
         assertSame(eventPublisher, warmUpTaskExecutor.getEventPublisher());
-        assertNull(warmUpTaskExecutor.getExecutionIdGenerator());
+        assertNull(warmUpTaskExecutor.getIdGenerator());
+        warmUpTaskExecutor.afterPropertiesSet();
 
         int count = 100;
         List<WarmUpTask> tasks = new ArrayList<>(count);
@@ -46,7 +49,7 @@ class SyncWarmUpTaskExecutorTest {
     }
 
     @Test
-    void test2() throws ExecutionException, InterruptedException {
+    void test2() throws Exception {
         ApplicationEventPublisher eventPublisher = DummyApplicationEventPublisher.INSTANCE;
 
         CompletableFuture<Tuple2<Integer, Integer>> warmUpExecutionFuture = new CompletableFuture<>();
@@ -78,7 +81,10 @@ class SyncWarmUpTaskExecutorTest {
                 }
             }
         };
-        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(eventPublisher);
+        ApplicationContext applicationContext = new StaticApplicationContext();
+        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(applicationContext);
+        warmUpTaskExecutor.setEventPublisher(eventPublisher);
+        warmUpTaskExecutor.afterPropertiesSet();
 
         int count = 100;
         List<WarmUpTask> tasks = new ArrayList<>(count);
@@ -116,12 +122,15 @@ class SyncWarmUpTaskExecutorTest {
     }
 
     @Test
-    void test3() {
+    void test3() throws Exception {
+        ApplicationContext applicationContext = new StaticApplicationContext();
+        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(applicationContext);
         ApplicationEventPublisher eventPublisher = DummyApplicationEventPublisher.INSTANCE;
-        Supplier<Object> idGenerator = () -> UUID.randomUUID().toString();
-        SyncWarmUpTaskExecutor warmUpTaskExecutor = new SyncWarmUpTaskExecutor(eventPublisher);
-        warmUpTaskExecutor.setExecutionIdGenerator(idGenerator);
-        assertSame(idGenerator, warmUpTaskExecutor.getExecutionIdGenerator());
+        warmUpTaskExecutor.setEventPublisher(eventPublisher);
+        StringIdGenerator idGenerator = StringIdGenerator.FALLBACK;
+        warmUpTaskExecutor.setIdGenerator(idGenerator);
+        warmUpTaskExecutor.afterPropertiesSet();
+        assertSame(idGenerator, warmUpTaskExecutor.getIdGenerator());
         warmUpTaskExecutor.execute(null);
     }
 

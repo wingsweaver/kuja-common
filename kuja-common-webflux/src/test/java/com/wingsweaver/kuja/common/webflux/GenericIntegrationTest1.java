@@ -322,7 +322,7 @@ public class GenericIntegrationTest1 {
             map.put("requestFullPath", accessor.getRequestFullPath());
 
             // 存入 BusinessContextAccessor 级别的内容
-            map.put("contextType", accessor.getContextType().toString());
+            map.put("contextType", businessContext.getContextType().toString());
 
             // 返回
             return map;

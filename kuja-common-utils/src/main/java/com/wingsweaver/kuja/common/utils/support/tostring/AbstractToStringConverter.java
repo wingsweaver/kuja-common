@@ -20,6 +20,38 @@ public abstract class AbstractToStringConverter implements ToStringConverter, To
     private static final Map<Class<?>, ToStringWithConverter> TO_STRING_WITH_CONVERTER_MAP = new ConcurrentHashMap<>();
 
     /**
+     * 加入指定实例的字符串转换结果。
+     *
+     * @param builder   字符串构建器
+     * @param object    目标实例
+     * @param config    当前的配置
+     * @param subConfig 下一级配置
+     */
+    protected static void appendObject(StringBuilder builder, Object object,
+                                       ToStringConfig config, ToStringConfig subConfig) {
+        if (config.canReflect()) {
+            // 如果还可以继续反射的话，那么继续反射
+            builder.append(ToStringBuilder.toString(object, subConfig));
+        } else {
+            // 否则不深入分析，直接使用 toString() 方法
+            builder.append(object);
+        }
+    }
+
+    /**
+     * 生成下一级处理用的 {@link ToStringConfig} 实例。<br>
+     * 将 {@link ToStringConfig#getMaxReflectDepth()} 减 1。
+     *
+     * @param config 当前的配置
+     * @return 下一级处理用的 {@link ToStringConfig} 实例
+     */
+    protected static ToStringConfig subConfig(ToStringConfig config) {
+        ToStringConfig subConfig = new ToStringConfig(config);
+        subConfig.setMaxReflectDepth(config.getMaxReflectDepth() - 1);
+        return subConfig;
+    }
+
+    /**
      * 解析指定的注解，生成对应的 ToStringConverter 实例。
      *
      * @param element 注解所在的元素

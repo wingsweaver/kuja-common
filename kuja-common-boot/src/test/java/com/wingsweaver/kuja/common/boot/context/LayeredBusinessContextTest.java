@@ -19,7 +19,7 @@ class LayeredBusinessContextTest {
     @Test
     void test2() {
         Map<String, Object> map = MapUtil.from("id", 10, "name", "tom");
-        BusinessContext parent = BusinessContext.of(map);
+        BusinessContext parent = new MapBusinessContext(map);
         LayeredBusinessContext businessContext = new LayeredBusinessContext(parent);
         assertSame(parent, businessContext.getParent());
         assertEquals(2, businessContext.asMap().size());

@@ -17,7 +17,7 @@ class BusinessContextMethodWrapperTest {
     @Test
     void runnable() {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         ValueWrapper<Integer> valueWrapper = new ValueWrapper<>();
         Runnable runnable = BusinessContextMethodWrapper.runnable(() -> {
             valueWrapper.setValue(BusinessContextHolder.getCurrent().getAttribute("id", 11));
@@ -45,7 +45,7 @@ class BusinessContextMethodWrapperTest {
     @Test
     void runnable2() {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         ValueWrapper<Integer> valueWrapper = new ValueWrapper<>();
         Runnable runnable = BusinessContextMethodWrapper.runnable(() -> {
             valueWrapper.setValue(BusinessContextHolder.getCurrent().getAttribute("id", 11));
@@ -53,7 +53,7 @@ class BusinessContextMethodWrapperTest {
 
 
         Map<String, Object> map2 = MapUtil.from("id", 20);
-        BusinessContext businessContext2 = BusinessContext.of(map2);
+        BusinessContext businessContext2 = new MapBusinessContext(map2);
         try (BusinessContextHolder.TempHolder ignored = BusinessContextHolder.with(businessContext2)) {
             assertEquals(20, (int) BusinessContextHolder.getCurrent().getAttribute("id"));
             runnable.run();
@@ -68,7 +68,7 @@ class BusinessContextMethodWrapperTest {
     @Test
     void throwableRunnable() throws Throwable {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         ValueWrapper<Integer> valueWrapper = new ValueWrapper<>();
         ThrowableRunnable<?> runnable = BusinessContextMethodWrapper.throwableRunnable(() -> {
             valueWrapper.setValue(BusinessContextHolder.getCurrent().getAttribute("id", 11));
@@ -103,14 +103,14 @@ class BusinessContextMethodWrapperTest {
     @Test
     void throwableRunnable2() throws Throwable {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         ValueWrapper<Integer> valueWrapper = new ValueWrapper<>();
         ThrowableRunnable<?> runnable = BusinessContextMethodWrapper.throwableRunnable(() -> {
             valueWrapper.setValue(BusinessContextHolder.getCurrent().getAttribute("id", 11));
         }, businessContext);
 
         Map<String, Object> map2 = MapUtil.from("id", 20);
-        BusinessContext businessContext2 = BusinessContext.of(map2);
+        BusinessContext businessContext2 = new MapBusinessContext(map2);
         try (BusinessContextHolder.TempHolder ignored = BusinessContextHolder.with(businessContext2)) {
             assertEquals(20, (int) BusinessContextHolder.getCurrent().getAttribute("id"));
             runnable.run();
@@ -131,7 +131,7 @@ class BusinessContextMethodWrapperTest {
     @Test
     void callable() throws Exception {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         Callable<Integer> callable = BusinessContextMethodWrapper.callable(() ->
                 BusinessContextHolder.getCurrent().getAttribute("id", 11));
         Callable<Integer> callable2 = null;
@@ -160,12 +160,12 @@ class BusinessContextMethodWrapperTest {
     @Test
     void callable2() throws Throwable {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         Callable<Integer> callable = BusinessContextMethodWrapper.callable(() ->
                 BusinessContextHolder.getCurrent().getAttribute("id", 11), businessContext);
 
         Map<String, Object> map2 = MapUtil.from("id", 20);
-        BusinessContext businessContext2 = BusinessContext.of(map2);
+        BusinessContext businessContext2 = new MapBusinessContext(map2);
         try (BusinessContextHolder.TempHolder ignored = BusinessContextHolder.with(businessContext2)) {
             assertEquals(20, (int) BusinessContextHolder.getCurrent().getAttribute("id"));
             assertEquals(10, callable.call());
@@ -184,7 +184,7 @@ class BusinessContextMethodWrapperTest {
     @Test
     void supplier() {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         Supplier<Integer> supplier = BusinessContextMethodWrapper.supplier(() ->
                 BusinessContextHolder.getCurrent().getAttribute("id", 11));
         Supplier<Integer> supplier2 = null;
@@ -206,12 +206,12 @@ class BusinessContextMethodWrapperTest {
     @Test
     void supplier2() throws Throwable {
         Map<String, Object> map = MapUtil.from("id", 10);
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         Supplier<Integer> supplier = BusinessContextMethodWrapper.supplier(() ->
                 BusinessContextHolder.getCurrent().getAttribute("id"), businessContext);
 
         Map<String, Object> map2 = MapUtil.from("id", 20);
-        BusinessContext businessContext2 = BusinessContext.of(map2);
+        BusinessContext businessContext2 = new MapBusinessContext(map2);
         try (BusinessContextHolder.TempHolder ignored = BusinessContextHolder.with(businessContext2)) {
             assertEquals(20, (int) BusinessContextHolder.getCurrent().getAttribute("id"));
             assertEquals(10, supplier.get());

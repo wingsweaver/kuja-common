@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.webmvc.jee;
 
+import com.wingsweaver.kuja.common.boot.condition.ConditionalOnSpringBootVersion2x;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlingDelegate;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
  * @author wingsweaver
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnSpringBootVersion2x
 @ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
 @EnableKujaCommonWebMvcCommon
 @AutoConfigureBefore(ErrorMvcAutoConfiguration.class)

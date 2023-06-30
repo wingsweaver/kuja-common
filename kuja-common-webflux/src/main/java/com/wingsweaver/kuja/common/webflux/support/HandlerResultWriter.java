@@ -2,13 +2,11 @@ package com.wingsweaver.kuja.common.webflux.support;
 
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.CollectionUtils;
@@ -30,9 +28,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class HandlerResultWriter implements ApplicationContextAware, InitializingBean {
-    private ApplicationContext applicationContext;
-
+public class HandlerResultWriter extends AbstractComponent {
     /**
      * HandlerResultHandler 实例的列表。
      */
@@ -56,8 +52,10 @@ public class HandlerResultWriter implements ApplicationContextAware, Initializin
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("applicationContext", this.getApplicationContext());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 resultHandlers
         this.initResultHandlers();
     }
 

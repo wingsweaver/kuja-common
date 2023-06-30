@@ -91,9 +91,9 @@ class ReflectToStringConverterTest {
     void test3() {
         Person person = new Person();
 
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTransient(true).setPublicOnly(false)
-                .build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTransient(true);
+        config.setPublicOnly(false);
 
         ReflectToStringConverter converter = ReflectToStringConverter.INSTANCE;
         StringBuilder sb = new StringBuilder();
@@ -207,10 +207,10 @@ class ReflectToStringConverterTest {
     void test7() {
         Person3 person2 = new Person3();
 
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTransient(true).setPublicOnly(false)
-                .setIncludeTypeName(true)
-                .build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTransient(true);
+        config.setPublicOnly(false);
+        config.setIncludeTypeName(true);
 
         ReflectToStringConverter converter = ReflectToStringConverter.INSTANCE;
         StringBuilder sb = new StringBuilder();

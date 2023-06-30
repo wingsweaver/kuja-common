@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
+import com.wingsweaver.kuja.common.utils.support.tostring.ToStringBuilder;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -15,5 +16,10 @@ public class WarmUpEvent extends ApplicationEvent {
     public WarmUpEvent(Object source, WarmUpExecution execution) {
         super(source);
         this.execution = execution;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.toString(this);
     }
 }

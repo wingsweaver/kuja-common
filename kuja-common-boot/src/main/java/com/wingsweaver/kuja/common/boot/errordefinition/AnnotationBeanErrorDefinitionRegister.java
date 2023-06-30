@@ -1,13 +1,12 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,10 +20,8 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class AnnotationBeanErrorDefinitionRegister implements ErrorDefinitionRegister, ApplicationContextAware, DefaultOrdered {
+public class AnnotationBeanErrorDefinitionRegister extends AbstractComponent implements ErrorDefinitionRegister, DefaultOrdered {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationBeanErrorDefinitionRegister.class);
-
-    private ApplicationContext applicationContext;
 
     @Override
     public void register(Collection<ErrorDefinition> errorDefinitions) {

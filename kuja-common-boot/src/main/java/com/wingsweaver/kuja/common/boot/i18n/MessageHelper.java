@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.boot.i18n;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.StringFormatter;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.util.Optional;
  */
 @Getter
 @Setter
-public class MessageHelper implements MessageSourceAware {
+public class MessageHelper extends AbstractComponent implements MessageSourceAware {
     private static final int MIN_CODE_LENGTH = 2;
 
     /**
@@ -53,6 +54,7 @@ public class MessageHelper implements MessageSourceAware {
     /**
      * 获取指定的国际化消息。
      *
+     * @param code 消息编码
      * @param args 消息参数
      * @return 格式化后的消息
      */
@@ -64,6 +66,7 @@ public class MessageHelper implements MessageSourceAware {
      * 获取指定的国际化消息。
      *
      * @param locale 本地化信息
+     * @param code   消息编码
      * @param args   消息参数
      * @return 格式化后的消息
      */
@@ -75,6 +78,7 @@ public class MessageHelper implements MessageSourceAware {
      * 获取指定的国际化消息。
      *
      * @param messageSource MessageSource 实例
+     * @param code          消息编码
      * @param args          消息参数
      * @return 格式化后的消息
      */
@@ -87,6 +91,7 @@ public class MessageHelper implements MessageSourceAware {
      *
      * @param messageSource MessageSource 实例
      * @param locale        本地化信息
+     * @param code          消息编码
      * @param args          消息参数
      * @return 格式化后的消息
      */

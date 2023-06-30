@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webmvc.jakarta.util;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import jakarta.servlet.RequestDispatcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -31,7 +32,7 @@ class ServletRequestUtilTest {
     void testBusinessContext() {
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
         assertNull(ServletRequestUtil.getBusinessContext(servletRequest));
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
         assertSame(businessContext, ServletRequestUtil.getBusinessContext(servletRequest));
     }

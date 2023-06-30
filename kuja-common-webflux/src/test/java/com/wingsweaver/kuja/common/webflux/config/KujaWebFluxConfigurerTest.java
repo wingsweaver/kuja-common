@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class KujaWebFluxConfigurerTest {
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         KujaWebFluxConfigurer configurer = new KujaWebFluxConfigurer();
 
         assertNull(configurer.getBusinessContextFactory());

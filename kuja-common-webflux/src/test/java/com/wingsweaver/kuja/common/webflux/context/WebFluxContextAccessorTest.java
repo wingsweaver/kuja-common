@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webflux.context;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class WebFluxContextAccessorTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         WebFluxContextAccessor accessor = new WebFluxContextAccessor(businessContext);
 
         // serverWebExchange

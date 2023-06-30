@@ -2,6 +2,7 @@ package com.wingsweaver.kuja.common.boot.returnvalue;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextAccessor;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.include.IncludeAttribute;
 import com.wingsweaver.kuja.common.boot.include.IncludeSettings;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SuppressWarnings("unchecked")
 class ErrorReturnValueCustomizerTest {
     @Test
-    void test() {
+    void test() throws Exception {
         ApplicationContext applicationContext = new StaticApplicationContext();
         IncludeSettings includeSettings = new IncludeSettings(IncludeAttribute.ALWAYS);
 
@@ -32,7 +33,7 @@ class ErrorReturnValueCustomizerTest {
         }
 
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             BusinessContextAccessor accessor = new BusinessContextAccessor(businessContext);
             Exception error = new Exception("some-error");
             accessor.setError(error);
@@ -49,7 +50,7 @@ class ErrorReturnValueCustomizerTest {
         }
 
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             BusinessContextAccessor accessor = new BusinessContextAccessor(businessContext);
             Exception error = new Exception("some-error");
             accessor.setError(error);

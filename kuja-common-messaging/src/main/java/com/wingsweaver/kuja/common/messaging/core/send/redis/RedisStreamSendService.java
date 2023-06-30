@@ -2,8 +2,11 @@ package com.wingsweaver.kuja.common.messaging.core.send.redis;
 
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,7 +20,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  */
 @Getter
 @Setter
+@SuppressWarnings("PMD.GuardLogStatement")
 public class RedisStreamSendService extends AbstractRedisStreamSendService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisStreamSendService.class);
+
     /**
      * RedisTemplate 实例。
      */
@@ -26,6 +32,7 @@ public class RedisStreamSendService extends AbstractRedisStreamSendService {
     @Override
     protected void sendMessage(MessageSendContext context, RedisSendOptions options, MessageSendCallback callback) {
         ObjectRecord<String, Object> record = this.resolveRecord(context, options);
+        LogUtil.trace(LOGGER, "Send Redis-Stream message to stream {}, context id = {}", record.getStream(), context.getId());
         RecordId recordId = this.redisTemplate.opsForStream().add(record);
         this.setRecordId(context, recordId);
     }
@@ -43,7 +50,7 @@ public class RedisStreamSendService extends AbstractRedisStreamSendService {
      */
     protected void initRedisTemplate() {
         if (this.redisTemplate == null) {
-            this.redisTemplate = this.getApplicationContext().getBean(StringRedisTemplate.class);
+            this.redisTemplate = this.getBean(StringRedisTemplate.class);
         }
     }
 }

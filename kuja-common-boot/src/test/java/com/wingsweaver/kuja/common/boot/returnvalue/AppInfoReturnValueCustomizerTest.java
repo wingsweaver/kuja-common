@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SuppressWarnings("unchecked")
 class AppInfoReturnValueCustomizerTest {
     @Test
-    void test() {
+    void test() throws Exception {
         ApplicationContext applicationContext = new StaticApplicationContext();
         IncludeSettings includeSettings = new IncludeSettings(IncludeAttribute.ALWAYS);
         AppInfo appInfo = new DefaultAppInfo();
@@ -47,7 +47,7 @@ class AppInfoReturnValueCustomizerTest {
     }
 
     @Test
-    void test2() {
+    void test2() throws Exception {
         StaticApplicationContext applicationContext = new StaticApplicationContext();
         IncludeSettings includeSettings = new IncludeSettings(IncludeAttribute.ALWAYS);
         AppInfo appInfo = new DefaultAppInfo();

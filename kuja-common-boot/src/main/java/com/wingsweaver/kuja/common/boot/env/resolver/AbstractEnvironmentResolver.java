@@ -1,5 +1,7 @@
 package com.wingsweaver.kuja.common.boot.env.resolver;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -23,6 +25,8 @@ import java.util.function.UnaryOperator;
  *
  * @author wingsweaver
  */
+@Getter
+@Setter
 public abstract class AbstractEnvironmentResolver implements EnvironmentResolver {
     private static final String[] EMPTY_ARGUMENTS = new String[0];
 
@@ -56,6 +60,9 @@ public abstract class AbstractEnvironmentResolver implements EnvironmentResolver
      */
     private List<EnvironmentPostProcessor> postProcessors;
 
+    /**
+     * 构造函数。
+     */
     protected AbstractEnvironmentResolver() {
         this.getPreProcessors(true).add(new PreEnvironmentResolverProcessor());
         this.getPostProcessors(true).add(new PostEnvironmentResolverProcessor());
@@ -205,43 +212,12 @@ public abstract class AbstractEnvironmentResolver implements EnvironmentResolver
         return environment;
     }
 
-    public UnaryOperator<ConfigurableEnvironment> getEnvironmentInitializer() {
-        return environmentInitializer;
-    }
-
-    public void setEnvironmentInitializer(UnaryOperator<ConfigurableEnvironment> environmentInitializer) {
-        this.environmentInitializer = environmentInitializer;
-    }
-
-    public UnaryOperator<SpringApplicationBuilder> getSpringApplicationBuilderInitializer() {
-        return springApplicationBuilderInitializer;
-    }
-
-    public void setSpringApplicationBuilderInitializer(
-            UnaryOperator<SpringApplicationBuilder> springApplicationBuilderInitializer) {
-        this.springApplicationBuilderInitializer = springApplicationBuilderInitializer;
-    }
-
-    public UnaryOperator<SpringApplication> getSpringApplicationInitializer() {
-        return springApplicationInitializer;
-    }
-
-    public void setSpringApplicationInitializer(UnaryOperator<SpringApplication> springApplicationInitializer) {
-        this.springApplicationInitializer = springApplicationInitializer;
-    }
-
-    public String[] getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String[] arguments) {
-        this.arguments = arguments;
-    }
-
-    public List<EnvironmentPostProcessor> getPreProcessors() {
-        return preProcessors;
-    }
-
+    /**
+     * 获取环境的预处理器的列表。
+     *
+     * @param createIfAbsent 如果不存在，是否创建
+     * @return 环境的预处理器的列表
+     */
     public List<EnvironmentPostProcessor> getPreProcessors(boolean createIfAbsent) {
         if (this.preProcessors == null && createIfAbsent) {
             this.preProcessors = new LinkedList<>();
@@ -249,22 +225,16 @@ public abstract class AbstractEnvironmentResolver implements EnvironmentResolver
         return this.preProcessors;
     }
 
-    public void setPreProcessors(List<EnvironmentPostProcessor> preProcessors) {
-        this.preProcessors = preProcessors;
-    }
-
-    public List<EnvironmentPostProcessor> getPostProcessors() {
-        return postProcessors;
-    }
-
+    /**
+     * 获取环境的后处理器的列表。
+     *
+     * @param createIfAbsent 如果不存在，是否创建
+     * @return 环境的后处理器的列表
+     */
     public List<EnvironmentPostProcessor> getPostProcessors(boolean createIfAbsent) {
         if (this.postProcessors == null && createIfAbsent) {
             this.postProcessors = new LinkedList<>();
         }
         return this.postProcessors;
-    }
-
-    public void setPostProcessors(List<EnvironmentPostProcessor> postProcessors) {
-        this.postProcessors = postProcessors;
     }
 }

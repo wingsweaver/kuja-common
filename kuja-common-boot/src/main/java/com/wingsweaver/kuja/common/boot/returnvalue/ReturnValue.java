@@ -3,7 +3,9 @@ package com.wingsweaver.kuja.common.boot.returnvalue;
 import com.wingsweaver.kuja.common.utils.model.AbstractTagsTemps;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -13,6 +15,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReturnValue extends AbstractTagsTemps {
     /**
      * 错误编码。

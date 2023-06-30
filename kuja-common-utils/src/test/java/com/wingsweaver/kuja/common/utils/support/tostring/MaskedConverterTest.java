@@ -12,8 +12,8 @@ class MaskedConverterTest {
     @Test
     void testToStringWithConverter() throws NoSuchFieldException, IllegalAccessException {
         MaskedConverter converter = new MaskedConverter();
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTypeName(false).build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTypeName(false);
         Tester tester = new Tester();
 
         {
@@ -53,8 +53,8 @@ class MaskedConverterTest {
     void testConfigurableToStringConverter() {
         String number = "13912345678";
         MaskedConverter converter = new MaskedConverter();
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTypeName(false).build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTypeName(false);
 
         {
             StringBuilder sb = new StringBuilder();

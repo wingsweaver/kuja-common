@@ -2,15 +2,13 @@ package com.wingsweaver.kuja.common.boot.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.model.ValueWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 带异常处理的组件的基类。
@@ -19,13 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Getter
 @Setter
-public abstract class AbstractErrorHandlingComponent implements InitializingBean {
+public abstract class AbstractErrorHandlingComponent extends AbstractComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractErrorHandlingComponent.class);
 
     /**
      * 异常处理器管理器。
      */
-    @Autowired
     private ErrorHandlingDelegate errorHandlingDelegate;
 
     /**
@@ -123,7 +120,19 @@ public abstract class AbstractErrorHandlingComponent implements InitializingBean
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("errorHandlingDelegate", this.getErrorHandlingDelegate());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 errorHandlingDelegate
+        this.initErrorHandlingDelegate();
+    }
+
+    /**
+     * 初始化 errorHandlingDelegate。
+     */
+    protected void initErrorHandlingDelegate() {
+        if (this.errorHandlingDelegate == null) {
+            this.errorHandlingDelegate = this.getBean(ErrorHandlingDelegate.class);
+        }
     }
 }

@@ -21,8 +21,9 @@ public abstract class AbstractEnvironmentProcessor {
     /**
      * 处理环境对象。
      *
-     * @param environment 环境对象
-     * @param application 应用对象
+     * @param environment   环境对象
+     * @param application   应用对象
+     * @param locationArray 资源所在位置的数组
      */
     protected void processInternal(ConfigurableEnvironment environment, SpringApplication application, String locationArray) {
         if (StringUtil.isNotEmpty(locationArray)

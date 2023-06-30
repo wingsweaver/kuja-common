@@ -14,7 +14,10 @@ public interface BusinessContextFactory {
     BusinessContext create();
 
     /**
-     * 默认的 {@link BusinessContextFactory} 实例。
+     * 创建 {@link BusinessContext} 实例。
+     *
+     * @param parent 父级上下文
+     * @return 业务上下文的实例
      */
-    BusinessContextFactory DEFAULT = MapBusinessContext::new;
+    BusinessContext create(BusinessContext parent);
 }

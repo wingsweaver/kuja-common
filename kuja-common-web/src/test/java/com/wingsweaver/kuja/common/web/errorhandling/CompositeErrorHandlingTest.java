@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.web.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinitionProperties;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlerContext;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
@@ -43,7 +44,7 @@ class CompositeErrorHandlingTest {
 
     @Test
     void test() throws Throwable {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);
@@ -63,7 +64,7 @@ class CompositeErrorHandlingTest {
         responseData.setStatus(HttpStatus.NOT_FOUND);
         this.customResponseEntityReturnValueErrorHandlingComponent.responseData = responseData;
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);
@@ -85,7 +86,7 @@ class CompositeErrorHandlingTest {
     void test3() throws Throwable {
         this.customResponseEntityReturnValueErrorHandlingComponent.useResponseEntity = true;
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);
@@ -108,7 +109,7 @@ class CompositeErrorHandlingTest {
         this.customResponseEntityReturnValueErrorHandlingComponent.useResponseEntity = true;
         this.customResponseEntityReturnValueErrorHandlingComponent.responseData = responseData;
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);
@@ -132,7 +133,7 @@ class CompositeErrorHandlingTest {
 
     @Test
     void testGlobalErrorAdvice() throws Throwable {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         Exception error = new Exception("some-error");
 
         LogContext.setLevel(Level.INFO);

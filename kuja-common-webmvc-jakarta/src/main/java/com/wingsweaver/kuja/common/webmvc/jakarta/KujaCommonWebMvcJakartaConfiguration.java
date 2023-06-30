@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.webmvc.jakarta;
 
+import com.wingsweaver.kuja.common.boot.condition.ConditionalOnSpringBootVersion3x;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlingDelegate;
@@ -17,6 +18,7 @@ import com.wingsweaver.kuja.common.webmvc.jakarta.listener.BusinessContextServle
 import com.wingsweaver.kuja.common.webmvc.jakarta.support.ServletResponseWriter;
 import jakarta.servlet.Servlet;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -25,7 +27,6 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -42,10 +43,11 @@ import java.util.stream.Collectors;
  *
  * @author wingsweaver
  */
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
-@EnableKujaCommonWebMvcCommon
+@AutoConfiguration
 @AutoConfigureBefore(ErrorMvcAutoConfiguration.class)
+@EnableKujaCommonWebMvcCommon
+@ConditionalOnSpringBootVersion3x
+@ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
 @Import(WebMvcAutoConfiguration.class)
 public class KujaCommonWebMvcJakartaConfiguration extends AbstractConfiguration {
     @Bean

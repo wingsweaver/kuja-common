@@ -2,27 +2,27 @@ package com.wingsweaver.kuja.common.webflux.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
+import com.wingsweaver.kuja.common.boot.errorhandling.AbstractErrorHandlingComponent;
 import com.wingsweaver.kuja.common.boot.errorhandling.AbstractReturnValueErrorHandlingComponent;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlerContext;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlingDelegate;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueFactory;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.model.ValueWrapper;
+import com.wingsweaver.kuja.common.utils.support.spring.BeanUtil;
 import com.wingsweaver.kuja.common.web.errorhandling.ResponseData;
 import com.wingsweaver.kuja.common.web.errorhandling.WebErrorHandlerContextAccessor;
 import com.wingsweaver.kuja.common.web.exception.UnknownWebException;
 import com.wingsweaver.kuja.common.webflux.constants.KujaCommonWebFluxOrders;
 import com.wingsweaver.kuja.common.webflux.support.ServerWebExchangeBusinessContextFactory;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
@@ -46,21 +46,36 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Getter
 @Setter
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler
-        implements ErrorWebExceptionHandler, InitializingBean, Ordered {
+        implements ErrorWebExceptionHandler, ApplicationContextAware, Ordered {
+    /**
+     * ApplicationContext 实例。
+     */
+    private ApplicationContext applicationContext;
+
+    /**
+     * ErrorAttributes 实例。
+     */
     private final ErrorAttributes errorAttributes;
 
+    /**
+     * ServerWebExchangeBusinessContextFactory 实例。
+     */
     private ServerWebExchangeBusinessContextFactory businessContextFactory;
 
+    /**
+     * ReturnValueFactory 实例。
+     */
     private ReturnValueFactory returnValueFactory;
 
+    /**
+     * ErrorHandlingDelegate 实例。
+     */
     private ErrorHandlingDelegate errorHandlingDelegate;
 
     /**
      * 异常处理组件。
      */
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private InnerErrorHandlingComponent errorHandlingComponent;
+    private AbstractErrorHandlingComponent errorHandlingComponent;
 
     public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources, ApplicationContext applicationContext) {
         super(errorAttributes, resources, applicationContext);
@@ -71,14 +86,56 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
-        AssertState.Named.notNull("returnValueFactory", this.getReturnValueFactory());
-        AssertState.Named.notNull("errorHandlingDelegate", this.getErrorHandlingDelegate());
+        // 初始化 businessContextFactory
+        this.initBusinessContextFactory();
+
+        // 初始化 returnValueFactory
+        this.initReturnValueFactory();
+
+        // 初始化 errorHandlingDelegate
+        this.initErrorHandlingDelegate();
 
         // 初始化 errorHandlingComponent
-        this.errorHandlingComponent = new InnerErrorHandlingComponent();
-        this.errorHandlingComponent.setReturnValueFactory(this.returnValueFactory);
-        this.errorHandlingComponent.setErrorHandlingDelegate(this.errorHandlingDelegate);
+        this.initErrorHandlingComponent();
+    }
+
+    /**
+     * 初始化 errorHandlingComponent。
+     */
+    protected void initErrorHandlingComponent() {
+        if (this.errorHandlingComponent == null) {
+            InnerErrorHandlingComponent errorHandlingComponent = new InnerErrorHandlingComponent();
+            errorHandlingComponent.setReturnValueFactory(this.returnValueFactory);
+            errorHandlingComponent.setErrorHandlingDelegate(this.errorHandlingDelegate);
+            this.errorHandlingComponent = errorHandlingComponent;
+        }
+    }
+
+    /**
+     * 初始化 errorHandlingDelegate。
+     */
+    protected void initErrorHandlingDelegate() {
+        if (this.errorHandlingDelegate == null) {
+            this.errorHandlingDelegate = BeanUtil.getBean(this.applicationContext, ErrorHandlingDelegate.class);
+        }
+    }
+
+    /**
+     * 初始化 returnValueFactory。
+     */
+    protected void initReturnValueFactory() {
+        if (this.returnValueFactory == null) {
+            this.returnValueFactory = BeanUtil.getBean(this.applicationContext, ReturnValueFactory.class);
+        }
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = BeanUtil.getBean(this.applicationContext, ServerWebExchangeBusinessContextFactory.class);
+        }
     }
 
     @Override

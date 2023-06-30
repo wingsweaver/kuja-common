@@ -1,11 +1,10 @@
 package com.wingsweaver.kuja.common.webmvc.common.support;
 
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.spring.MethodParameterWrapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -21,7 +20,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class WebResponseWriter implements InitializingBean {
+public class WebResponseWriter extends AbstractComponent {
     /**
      * 所有的 {@link HandlerMethodReturnValueHandler} 实例的列表。
      */
@@ -85,10 +84,29 @@ public class WebResponseWriter implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        AssertState.Named.notNull("returnValueHandlers", this.getReturnValueHandlers());
+        super.afterPropertiesSet();
+
+        // 初始化 returnValueHandlers
+        this.initReturnValueHandlers();
 
         // 初始化 methodParameter
+        this.initMethodParameter();
+    }
+
+    /**
+     * 初始化 methodParameter。
+     */
+    protected void initMethodParameter() throws NoSuchMethodException {
         Method method = WebResponseWriter.class.getDeclaredMethod("dummyMethod");
         this.mockMethodParameter = new MethodParameter(method, -1);
+    }
+
+    /**
+     * 初始化 returnValueHandlers。
+     */
+    protected void initReturnValueHandlers() {
+        if (this.returnValueHandlers == null) {
+            this.returnValueHandlers = this.getBeansOrdered(HandlerMethodReturnValueHandler.class);
+        }
     }
 }

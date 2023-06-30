@@ -1,11 +1,11 @@
 package com.wingsweaver.kuja.common.messaging.core.send.common;
 
-import com.wingsweaver.kuja.common.boot.model.AbstractComponent;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContextAccessor;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendService;
 import com.wingsweaver.kuja.common.messaging.core.send.messaging.MessagingSendContextAccessor;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.model.tuple.Tuple2;
 import lombok.Getter;
 import lombok.Setter;

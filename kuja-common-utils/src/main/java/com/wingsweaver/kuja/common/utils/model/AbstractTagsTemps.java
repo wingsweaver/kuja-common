@@ -98,4 +98,31 @@ public abstract class AbstractTagsTemps extends AbstractPojo {
             this.temps.remove(key);
         }
     }
+
+    /**
+     * {@link AbstractTagsTemps} 的内部生成工具类。
+     */
+    protected static class InnerBuilder<B> {
+        /**
+         * 附加数据。
+         */
+        protected Map<String, Object> tags;
+
+        /**
+         * 临时数据。
+         */
+        protected transient Map<String, Object> temps;
+
+        @SuppressWarnings("unchecked")
+        public B tags(Map<String, Object> tags) {
+            this.tags = tags;
+            return (B) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public B temps(Map<String, Object> temps) {
+            this.temps = temps;
+            return (B) this;
+        }
+    }
 }

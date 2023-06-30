@@ -2,7 +2,8 @@ package com.wingsweaver.kuja.common.webmvc.jakarta.filter;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
-import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.DefaultBusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.webmvc.common.constants.KujaCommonWebMvcOrders;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
 import jakarta.servlet.ServletException;
@@ -22,13 +23,16 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class BusinessContextFilterTest {
 
     @Test
-    void doFilter() throws ServletException, IOException {
+    void doFilter() throws Exception {
         BusinessContextFilter filter = new BusinessContextFilter();
         assertNull(filter.getBusinessContextFactory());
         assertNull(filter.getBusinessContextCustomizers());
         assertEquals(KujaCommonWebMvcOrders.BUSINESS_CONTEXT_FILTER, filter.getOrder());
 
-        filter.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
+        DefaultBusinessContextFactory businessContextFactory = new DefaultBusinessContextFactory();
+        businessContextFactory.afterPropertiesSet();
+
+        filter.setBusinessContextFactory(businessContextFactory);
         BusinessContextCustomizer customizer = businessContext -> {
             businessContext.setAttribute("test-attr", "test-value-12345678");
         };
@@ -44,7 +48,7 @@ class BusinessContextFilterTest {
         MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
 
         filter.doFilter(servletRequest, servletResponse, filterChain);

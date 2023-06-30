@@ -8,49 +8,50 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BusinessContextTypeTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         BusinessContextAccessor accessor = new BusinessContextAccessor(businessContext);
 
+        BusinessContextTypeSetter contextTypeSetter = (BusinessContextTypeSetter) businessContext;
         assertEquals("Other", BusinessContextType.OTHER.toString());
-        accessor.setContextType(BusinessContextType.OTHER);
-        assertEquals(BusinessContextType.OTHER, accessor.getContextType());
+        contextTypeSetter.setContextType(BusinessContextType.OTHER);
+        assertEquals(BusinessContextType.OTHER, businessContext.getContextType());
 
         assertEquals("Web", BusinessContextType.Web.WEB.toString());
-        accessor.setContextType(BusinessContextType.Web.WEB);
-        assertEquals(BusinessContextType.Web.WEB, accessor.getContextType());
-        assertTrue(accessor.isContextType(BusinessContextType.Web.class));
+        contextTypeSetter.setContextType(BusinessContextType.Web.WEB);
+        assertEquals(BusinessContextType.Web.WEB, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.class));
 
         assertEquals("Web.Blocked.Servlet", BusinessContextType.Web.Blocked.SERVLET.toString());
-        accessor.setContextType(BusinessContextType.Web.Blocked.SERVLET);
-        assertEquals(BusinessContextType.Web.Blocked.SERVLET, accessor.getContextType());
-        assertTrue(accessor.isContextType(BusinessContextType.Web.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Blocked.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Blocked.class));
+        contextTypeSetter.setContextType(BusinessContextType.Web.Blocked.SERVLET);
+        assertEquals(BusinessContextType.Web.Blocked.SERVLET, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Blocked.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Blocked.class));
 
         assertEquals("Web.Blocked.Servlet.J2EE", BusinessContextType.Web.Blocked.J2EE.SERVLET.toString());
-        accessor.setContextType(BusinessContextType.Web.Blocked.J2EE.SERVLET);
-        assertEquals(BusinessContextType.Web.Blocked.J2EE.SERVLET, accessor.getContextType());
-        assertTrue(accessor.isContextType(BusinessContextType.Web.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Blocked.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Blocked.class));
-        assertTrue(accessor.isContextType(BusinessContextType.J2EE.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Blocked.J2EE.class));
+        contextTypeSetter.setContextType(BusinessContextType.Web.Blocked.J2EE.SERVLET);
+        assertEquals(BusinessContextType.Web.Blocked.J2EE.SERVLET, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Blocked.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Blocked.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.J2EE.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Blocked.J2EE.class));
 
         assertEquals("Web.Blocked.Servlet.JakartaEE", BusinessContextType.Web.Blocked.JakartaEE.SERVLET.toString());
-        accessor.setContextType(BusinessContextType.Web.Blocked.JakartaEE.SERVLET);
-        assertEquals(BusinessContextType.Web.Blocked.JakartaEE.SERVLET, accessor.getContextType());
-        assertTrue(accessor.isContextType(BusinessContextType.Web.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Blocked.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Blocked.class));
-        assertTrue(accessor.isContextType(BusinessContextType.JakartaEE.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Blocked.JakartaEE.class));
+        contextTypeSetter.setContextType(BusinessContextType.Web.Blocked.JakartaEE.SERVLET);
+        assertEquals(BusinessContextType.Web.Blocked.JakartaEE.SERVLET, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Blocked.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Blocked.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.JakartaEE.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Blocked.JakartaEE.class));
 
         assertEquals("Web.Reactive.WebFlux", BusinessContextType.Web.Reactive.WEB_FLUX.toString());
-        accessor.setContextType(BusinessContextType.Web.Reactive.WEB_FLUX);
-        assertEquals(BusinessContextType.Web.Reactive.WEB_FLUX, accessor.getContextType());
-        assertTrue(accessor.isContextType(BusinessContextType.Web.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Reactive.class));
-        assertTrue(accessor.isContextType(BusinessContextType.Web.Reactive.class));
+        contextTypeSetter.setContextType(BusinessContextType.Web.Reactive.WEB_FLUX);
+        assertEquals(BusinessContextType.Web.Reactive.WEB_FLUX, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Reactive.class));
+        assertTrue(businessContext.isContextType(BusinessContextType.Web.Reactive.class));
 
         assertEquals("Messaging", BusinessContextType.MessagingContext.MESSAGING.toString());
         assertEquals("Messaging.Kafka", BusinessContextType.MessagingContext.KAFKA.toString());

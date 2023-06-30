@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.utils.model.attributes;
 
 import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
+import com.wingsweaver.kuja.common.utils.support.tostring.DontReflect;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 
 import java.util.HashMap;
@@ -13,9 +14,14 @@ import java.util.function.BiFunction;
  * @param <K> 属性名称的类型
  * @author wingsweaver
  */
+@DontReflect
 public class MapMutableAttributes<K> extends MapAttributes<K> implements MutableAttributes<K> {
     public MapMutableAttributes(Map<K, ?> map) {
         super(map);
+    }
+
+    public MapMutableAttributes(Attributes<K> attributes) {
+        super(attributes);
     }
 
     @Override

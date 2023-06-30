@@ -2,6 +2,7 @@ package com.wingsweaver.kuja.common.webmvc.jakarta.interceptor;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextAccessor;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -35,7 +36,7 @@ class BusinessContextHandlerInterceptorTest {
 
         {
             servletRequest.setAttribute(BusinessContextHandlerInterceptor.KEY_PRE_HANDLED, false);
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
             assertTrue(interceptor.preHandle(servletRequest, servletResponse, handler));
             assertEquals(true, servletRequest.getAttribute(BusinessContextHandlerInterceptor.KEY_PRE_HANDLED));
@@ -60,7 +61,7 @@ class BusinessContextHandlerInterceptorTest {
 
         {
             servletRequest.setAttribute(BusinessContextHandlerInterceptor.KEY_AFTER_COMPLETION, false);
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
             Exception error = new Exception("some-error");
             interceptor.afterCompletion(servletRequest, servletResponse, handler, error);

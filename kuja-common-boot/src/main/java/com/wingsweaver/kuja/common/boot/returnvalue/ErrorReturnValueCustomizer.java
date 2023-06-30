@@ -23,8 +23,14 @@ import java.util.Map;
 @Getter
 @Setter
 public class ErrorReturnValueCustomizer extends AbstractOneTimeReturnValueCustomizer {
+    /**
+     * 错误信息的 Key。
+     */
     public static final String KEY_ERROR = "error";
 
+    /**
+     * 错误信息的键的前缀。
+     */
     public static final String INCLUDES_KEY_PREFIX = "return-value.error";
 
     /**
@@ -61,7 +67,7 @@ public class ErrorReturnValueCustomizer extends AbstractOneTimeReturnValueCustom
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
         // 检查 properties 是否设置

@@ -1,7 +1,7 @@
 package com.wingsweaver.kuja.common.boot.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
-import com.wingsweaver.kuja.common.utils.model.attributes.MutableAttributes;
+import com.wingsweaver.kuja.common.utils.model.context.Context;
 
 import java.util.function.Supplier;
 
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  *
  * @author wingsweaver
  */
-public interface ErrorHandlerContext extends MutableAttributes<String> {
+public interface ErrorHandlerContext extends Context {
     /**
      * 获取业务上下文。
      *
@@ -21,6 +21,7 @@ public interface ErrorHandlerContext extends MutableAttributes<String> {
     /**
      * 获取要处理的错误。
      *
+     * @param <E> 要处理的错误类型
      * @return 要处理的错误
      */
     <E extends Throwable> E getInputError();

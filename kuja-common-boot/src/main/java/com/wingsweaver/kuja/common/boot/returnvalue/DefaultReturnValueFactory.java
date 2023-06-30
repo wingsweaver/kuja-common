@@ -4,11 +4,11 @@ import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinition;
 import com.wingsweaver.kuja.common.boot.exception.BusinessException;
 import com.wingsweaver.kuja.common.boot.i18n.MessageHelper;
 import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  */
 @Getter
 @Setter
-public class DefaultReturnValueFactory implements ReturnValueFactory, InitializingBean {
+public class DefaultReturnValueFactory extends AbstractComponent implements ReturnValueFactory {
     /**
      * 消息辅助工具类。
      */
@@ -171,10 +171,34 @@ public class DefaultReturnValueFactory implements ReturnValueFactory, Initializi
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("messageHelper", this.getMessageHelper());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
         AssertState.Named.notNull("success", this.getSuccess());
         AssertState.Named.notNull("fail", this.getFail());
-        AssertState.Named.notNull("customizers", this.getCustomizers());
+
+        // 初始化 messageHelper
+        this.initMessageHelper();
+
+        // 初始化 customizers
+        this.initCustomizers();
+    }
+
+    /**
+     * 初始化 customizers。
+     */
+    protected void initCustomizers() {
+        if (this.customizers == null) {
+            this.customizers = this.getBeansOrdered(ReturnValueCustomizer.class);
+        }
+    }
+
+    /**
+     * 初始化 messageHelper。
+     */
+    protected void initMessageHelper() {
+        if (this.messageHelper == null) {
+            this.messageHelper = this.getBean(MessageHelper.class);
+        }
     }
 }

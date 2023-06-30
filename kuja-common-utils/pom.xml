@@ -11,6 +11,10 @@
 
     <artifactId>kuja-common-utils</artifactId>
     <description>kuja-common 工具类组件库</description>
+    <properties>
+        <fastjson.version>2.0.34</fastjson.version>
+        <fastjson2.version>2.0.34</fastjson2.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -42,6 +46,44 @@
             <artifactId>commons-io</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
 
         <!-- 编译相关依赖 -->
         <dependency>

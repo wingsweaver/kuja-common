@@ -2,8 +2,8 @@ package com.wingsweaver.kuja.common.webflux.filter;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.model.ValueWrapper;
 import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
 import com.wingsweaver.kuja.common.webflux.constants.KujaCommonWebFluxOrders;
@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -26,13 +25,8 @@ import reactor.util.context.Context;
  */
 @Getter
 @Setter
-public class BusinessWebFilter implements WebFilter, InitializingBean, DefaultOrdered {
+public class BusinessWebFilter extends AbstractComponent implements WebFilter, DefaultOrdered {
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessWebFilter.class);
-
-    /**
-     * 业务上下文工厂类的实例。
-     */
-    private ServerWebExchangeBusinessContextFactory businessContextFactory;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -46,6 +40,11 @@ public class BusinessWebFilter implements WebFilter, InitializingBean, DefaultOr
                 .doFirst(() -> this.onFirst(businessContext, threadTuple))
                 .doFinally(signal -> this.onFinally(businessContext, threadTuple));
     }
+
+    /**
+     * 业务上下文工厂类的实例。
+     */
+    private ServerWebExchangeBusinessContextFactory businessContextFactory;
 
     private void onFinally(BusinessContext businessContext, ValueWrapper<Thread> threadTuple) {
         if (threadTuple.getValue() == Thread.currentThread()) {
@@ -68,8 +67,20 @@ public class BusinessWebFilter implements WebFilter, InitializingBean, DefaultOr
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 businessContextFactory
+        this.initBusinessContextFactory();
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = this.getBean(ServerWebExchangeBusinessContextFactory.class);
+        }
     }
 
     @Override

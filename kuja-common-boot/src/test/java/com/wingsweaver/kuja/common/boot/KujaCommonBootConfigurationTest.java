@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -444,8 +443,8 @@ class KujaCommonBootConfigurationTest {
     @Configuration(proxyBeanMethods = false)
     public static class TestConfiguration extends AbstractConfiguration {
         @Bean
-        public WarmUpTaskExecutor kujaBootWarmUpTaskExecutor(ApplicationEventPublisher eventPublisher) {
-            return new AsyncWarmUpTaskExecutor(eventPublisher);
+        public WarmUpTaskExecutor kujaBootWarmUpTaskExecutor(ApplicationContext applicationContext) {
+            return new AsyncWarmUpTaskExecutor(applicationContext);
         }
 
         @Bean

@@ -1,8 +1,9 @@
 package com.wingsweaver.kuja.common.webmvc.jakarta.listener;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
-import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextType;
+import com.wingsweaver.kuja.common.boot.context.DefaultBusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.webmvc.common.constants.KujaCommonWebMvcOrders;
 import com.wingsweaver.kuja.common.webmvc.jakarta.context.ServletContextAccessor;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
@@ -30,16 +31,19 @@ class BusinessContextServletRequestListenerTest {
         assertNull(ServletRequestUtil.getBusinessContext(servletRequest));
 
         // ServletRequest 中关联了 BusinessContext 的场景
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
         listener.requestDestroyed(sre);
         assertNull(ServletRequestUtil.getBusinessContext(servletRequest));
     }
 
     @Test
-    void requestInitialized() {
+    void requestInitialized() throws Exception {
+        DefaultBusinessContextFactory businessContextFactory = new DefaultBusinessContextFactory();
+        businessContextFactory.afterPropertiesSet();
+
         BusinessContextServletRequestListener listener = new BusinessContextServletRequestListener();
-        listener.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
+        listener.setBusinessContextFactory(businessContextFactory);
         listener.afterPropertiesSet();
 
         MockServletContext servletContext = new MockServletContext();
@@ -52,7 +56,7 @@ class BusinessContextServletRequestListenerTest {
             BusinessContext businessContext = ServletRequestUtil.getBusinessContext(servletRequest);
             assertNotNull(businessContext);
             ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
-            assertSame(BusinessContextType.Web.Blocked.J2EE.SERVLET, accessor.getContextType());
+            assertSame(BusinessContextType.Web.Blocked.JakartaEE.SERVLET, businessContext.getContextType());
             assertSame(servletRequest, accessor.getOriginalRequest());
             assertSame(servletRequest, accessor.getServletRequest());
         }
@@ -60,25 +64,28 @@ class BusinessContextServletRequestListenerTest {
         // ServletRequest 中关联了 BusinessContext 的场景
         {
             ServletRequestUtil.removeBusinessContext(servletRequest);
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             ServletRequestUtil.setBusinessContext(servletRequest, businessContext);
             listener.requestInitialized(sre);
             assertSame(businessContext, ServletRequestUtil.getBusinessContext(servletRequest));
 
             ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
-            assertSame(BusinessContextType.Web.Blocked.J2EE.SERVLET, accessor.getContextType());
+            assertSame(BusinessContextType.Web.Blocked.JakartaEE.SERVLET, businessContext.getContextType());
             assertSame(servletRequest, accessor.getOriginalRequest());
             assertSame(servletRequest, accessor.getServletRequest());
         }
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
+        DefaultBusinessContextFactory businessContextFactory = new DefaultBusinessContextFactory();
+        businessContextFactory.afterPropertiesSet();
+
         BusinessContextServletRequestListener listener = new BusinessContextServletRequestListener();
         assertEquals(KujaCommonWebMvcOrders.BUSINESS_CONTEXT_SERVLET_REQUEST_LISTENER_ORDER, listener.getOrder());
         assertNull(listener.getBusinessContextFactory());
-        listener.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
-        assertSame(BusinessContextFactory.DEFAULT, listener.getBusinessContextFactory());
+        listener.setBusinessContextFactory(businessContextFactory);
+        assertSame(businessContextFactory, listener.getBusinessContextFactory());
         listener.afterPropertiesSet();
     }
 }

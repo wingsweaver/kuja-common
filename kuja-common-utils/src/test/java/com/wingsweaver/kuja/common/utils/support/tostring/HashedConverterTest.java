@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HashedConverterTest {
     @Test
     void testToStringWithConverter() throws NoSuchFieldException, IllegalAccessException {
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTypeName(false).build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTypeName(false);
 
         HashedConverter converter = new HashedConverter();
         HashedConverterTest.Tester tester = new HashedConverterTest.Tester();
@@ -33,8 +33,8 @@ class HashedConverterTest {
     void testConfigurableToStringConverter() {
         String number = "13912345678";
         HashedConverter converter = new HashedConverter();
-        ToStringConfig config = ToStringBuilder.getDefaultConfig().mutable()
-                .setIncludeTypeName(false).build();
+        ToStringConfig config = ToStringBuilder.getDefaultConfig();
+        config.setIncludeTypeName(false);
 
         {
             HashedConfig customConfig = new HashedConfig();

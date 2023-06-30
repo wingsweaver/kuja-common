@@ -13,12 +13,22 @@ import org.springframework.core.annotation.Order;
  */
 @Configuration(proxyBeanMethods = false)
 public class I18nConfiguration extends AbstractConfiguration {
+    /**
+     * 生成 MessageSourceHolder 的 Bean。
+     *
+     * @return MessageSourceHolder 的 Bean
+     */
     @Bean
     @Order(Orders.HIGHEST_PRECEDENCE)
     public MessageSourceHolder messageSourceHolder() {
         return new MessageSourceHolder();
     }
 
+    /**
+     * 生成 MessageHelper 的 Bean。
+     *
+     * @return MessageHelper 的 Bean
+     */
     @Bean
     public MessageHelper messageHelper() {
         return new MessageHelper();

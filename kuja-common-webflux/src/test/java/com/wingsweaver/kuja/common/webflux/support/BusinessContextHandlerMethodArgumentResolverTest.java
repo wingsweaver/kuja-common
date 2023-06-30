@@ -2,7 +2,8 @@ package com.wingsweaver.kuja.common.webflux.support;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
-import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.DefaultBusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import com.wingsweaver.kuja.common.webflux.util.ServerWebExchangeUtil;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class BusinessContextHandlerMethodArgumentResolverTest {
         BusinessContextCustomizer customizer = businessContext -> businessContext.setAttribute("custom-attribute", "1234567890");
 
         ServerWebExchangeBusinessContextFactory businessContextFactory = new ServerWebExchangeBusinessContextFactory();
-        businessContextFactory.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
+        businessContextFactory.setBusinessContextFactory(new DefaultBusinessContextFactory());
         businessContextFactory.setBusinessContextCustomizers(Collections.singletonList(customizer));
 
         BusinessContextHandlerMethodArgumentResolver resolver = new BusinessContextHandlerMethodArgumentResolver();
@@ -74,7 +75,7 @@ class BusinessContextHandlerMethodArgumentResolverTest {
     private void testResolveArgument2(BusinessContextHandlerMethodArgumentResolver resolver, MethodParameter methodParameter) {
         MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost:8080").build();
         MockServerWebExchange exchange = new MockServerWebExchange.Builder(request).build();
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
 
         Mono.deferContextual(contextView -> Mono.just(contextView.get(BusinessContext.class))
                         .then(resolver.resolveArgument(methodParameter, null, exchange)))
@@ -87,7 +88,7 @@ class BusinessContextHandlerMethodArgumentResolverTest {
     private void testResolveArgument(BusinessContextHandlerMethodArgumentResolver resolver, MethodParameter methodParameter) {
         MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost:8080").build();
         MockServerWebExchange exchange = new MockServerWebExchange.Builder(request).build();
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServerWebExchangeUtil.setBusinessContext(exchange, businessContext);
 
         resolver.resolveArgument(methodParameter, null, exchange)
@@ -98,7 +99,7 @@ class BusinessContextHandlerMethodArgumentResolverTest {
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         BusinessContextHandlerMethodArgumentResolver resolver = new BusinessContextHandlerMethodArgumentResolver();
         assertNull(resolver.getBusinessContextFactory());
         ServerWebExchangeBusinessContextFactory businessContextFactory = new ServerWebExchangeBusinessContextFactory();

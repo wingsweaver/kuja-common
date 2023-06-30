@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.wingsweaver.kuja.common.cloud.KujaCommonCloudConfiguration

@@ -1,55 +1,44 @@
 package com.wingsweaver.kuja.common.boot.context;
 
-import com.wingsweaver.kuja.common.utils.model.attributes.MutableAttributes;
+import com.wingsweaver.kuja.common.utils.model.context.Context;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * 业务上下文的接口定义。
  *
  * @author wingsweaver
  */
-public interface BusinessContext extends MutableAttributes<String> {
+public interface BusinessContext extends Context {
     /**
-     * 创建一个新的空的业务上下文。
+     * 获取业务上下文的类型。
      *
-     * @return 新的业务上下文
+     * @return 业务上下文的类型
      */
-    static BusinessContext create() {
-        return new MapBusinessContext();
+    BusinessContextType getContextType();
+
+    /**
+     * 检查是否是指定类型（实例）的业务上下文。
+     *
+     * @param target 目标类型实例
+     * @return 是否匹配
+     */
+    default boolean isContextType(Object target) {
+        return Objects.equals(this.getContextType(), target);
     }
 
     /**
-     * 创建一个新的业务上下文。
+     * 检查是否是指定类型的业务上下文。
      *
-     * @param map 初始的属性映射
-     * @return 新的业务上下文
+     * @param clazz 目标类型
+     * @return 是否匹配
      */
-    static BusinessContext of(Map<String, ?> map) {
-        return new MapBusinessContext(map);
-    }
-
-    /**
-     * 复制一个新的业务上下文。
-     *
-     * @param other 父业务上下文
-     * @return 新的业务上下文
-     */
-    static BusinessContext clone(BusinessContext other) {
-        if (other == null) {
-            return new MapBusinessContext();
+    default boolean isContextType(Class<?> clazz) {
+        BusinessContextType contextType = this.getContextType();
+        if (contextType == null || clazz == null) {
+            return false;
         } else {
-            return new MapBusinessContext(other.asMap());
+            return clazz.isInstance(contextType);
         }
-    }
-
-    /**
-     * 创建一个新的分层业务上下文。
-     *
-     * @param parent 父业务上下文
-     * @return 新的业务上下文
-     */
-    static BusinessContext layered(BusinessContext parent) {
-        return new LayeredBusinessContext(parent);
     }
 }

@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.utils.model.attributes;
 
 import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
+import com.wingsweaver.kuja.common.utils.support.tostring.DontReflect;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.Getter;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +22,7 @@ import java.util.function.Function;
  * @param <K> 属性名称的类型
  * @author wingsweaver
  */
+@DontReflect
 public class LayeredMutableAttributes<K> implements MutableAttributes<K> {
     /**
      * 用于标记属性不存在的值。

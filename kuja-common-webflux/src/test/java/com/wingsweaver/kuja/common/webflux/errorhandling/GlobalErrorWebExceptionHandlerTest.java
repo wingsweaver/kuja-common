@@ -46,7 +46,7 @@ class GlobalErrorWebExceptionHandlerTest {
     private GlobalErrorWebExceptionHandler exceptionHandler;
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         assertNotNull(exceptionHandler);
         assertNotNull(exceptionHandler.getErrorHandlingDelegate());
         assertNotNull(exceptionHandler.getErrorAttributes());

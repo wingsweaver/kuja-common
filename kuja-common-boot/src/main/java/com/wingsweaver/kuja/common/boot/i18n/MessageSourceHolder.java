@@ -13,6 +13,9 @@ import org.springframework.context.MessageSourceAware;
 @Getter
 @Setter
 public class MessageSourceHolder implements MessageSourceAware {
+    /**
+     * MessageSource 的实例。
+     */
     private static MessageSource messageSource;
 
     @SuppressWarnings("NullableProblems")

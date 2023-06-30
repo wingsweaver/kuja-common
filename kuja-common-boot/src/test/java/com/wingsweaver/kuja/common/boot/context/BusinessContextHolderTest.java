@@ -10,12 +10,12 @@ class BusinessContextHolderTest {
     void test() {
         assertNull(BusinessContextHolder.getCurrent());
         assertNull(BusinessContextHolder.getCurrent(true));
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         BusinessContextHolder.setCurrent(businessContext);
         assertSame(businessContext, BusinessContextHolder.getCurrent());
         assertSame(businessContext, BusinessContextHolder.getCurrent(true));
 
-        BusinessContext businessContext2 = BusinessContext.create();
+        BusinessContext businessContext2 = new MapBusinessContext();
         try (BusinessContextHolder.TempHolder ignored = BusinessContextHolder.with(businessContext2)) {
             assertSame(businessContext2, BusinessContextHolder.getCurrent());
             assertSame(businessContext2, BusinessContextHolder.getCurrent(true));
@@ -24,7 +24,7 @@ class BusinessContextHolderTest {
         assertSame(businessContext, BusinessContextHolder.getCurrent());
         assertSame(businessContext, BusinessContextHolder.getCurrent(true));
 
-        BusinessContext businessContext3 = BusinessContext.create();
+        BusinessContext businessContext3 = new MapBusinessContext();
         BusinessContextHolder.setCurrent(businessContext3, true);
         assertNull(BusinessContextHolder.getCurrent());
         assertSame(businessContext3, BusinessContextHolder.getCurrent(true));
@@ -36,7 +36,7 @@ class BusinessContextHolderTest {
 
     @Test
     void test2() throws InterruptedException {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         BusinessContextHolder.setCurrent(businessContext, false);
         try {
             Thread thread = new Thread(() -> {
@@ -49,7 +49,7 @@ class BusinessContextHolderTest {
             BusinessContextHolder.removeCurrent();
         }
 
-        BusinessContext businessContext2 = BusinessContext.create();
+        BusinessContext businessContext2 = new MapBusinessContext();
         BusinessContextHolder.setCurrent(businessContext2, true);
         try {
             Thread thread = new Thread(() -> {
@@ -62,7 +62,7 @@ class BusinessContextHolderTest {
             BusinessContextHolder.removeCurrent();
         }
 
-        BusinessContext businessContext3 = BusinessContext.create();
+        BusinessContext businessContext3 = new MapBusinessContext();
         Runnable runnable = BusinessContextMethodWrapper.runnable(() -> {
             assertSame(businessContext3, BusinessContextHolder.getCurrent());
             assertSame(businessContext3, BusinessContextHolder.getCurrent(true));

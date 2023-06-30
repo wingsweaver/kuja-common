@@ -14,6 +14,11 @@ public final class KujaCommonBoot {
 
     private static final ModuleVersion.Builder MODULE_VERSION_BUILDER = ModuleVersion.builder(KujaCommonBoot.class);
 
+    /**
+     * 获取模块的版本信息。
+     *
+     * @return 模块的版本信息
+     */
     public static ModuleVersion moduleVersion() {
         return MODULE_VERSION_BUILDER.build();
     }

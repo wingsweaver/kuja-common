@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.web.utils;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogContext;
 import com.wingsweaver.kuja.common.web.wrapper.MockWebRequestWrapper;
 import com.wingsweaver.kuja.common.web.wrapper.WebRequestWrapper;
@@ -17,7 +18,7 @@ class LogContextConfigBuilderTest {
     void buildBusinessContext() {
         assertNull(LogContextConfigBuilder.build((BusinessContext) null));
 
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         assertNull(LogContextConfigBuilder.build(businessContext));
     }
 

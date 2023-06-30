@@ -2,7 +2,7 @@ package com.wingsweaver.kuja.common.webflux.support;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
-import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
+import com.wingsweaver.kuja.common.boot.context.DefaultBusinessContextFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -17,15 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class ServerWebExchangeBusinessContextFactoryTest {
     @Test
-    void test() {
+    void test() throws Exception {
         BusinessContextCustomizer customizer = businessContext -> businessContext.setAttribute("custom-attribute", "1234567890");
         List<BusinessContextCustomizer> customizers = Collections.singletonList(customizer);
 
         ServerWebExchangeBusinessContextFactory businessContextFactory = new ServerWebExchangeBusinessContextFactory();
 
         assertNull(businessContextFactory.getBusinessContextFactory());
-        businessContextFactory.setBusinessContextFactory(BusinessContextFactory.DEFAULT);
-        assertSame(BusinessContextFactory.DEFAULT, businessContextFactory.getBusinessContextFactory());
+        DefaultBusinessContextFactory businessContextFactory2 = new DefaultBusinessContextFactory();
+        businessContextFactory2.afterPropertiesSet();
+        businessContextFactory.setBusinessContextFactory(businessContextFactory2);
+        assertSame(businessContextFactory2, businessContextFactory.getBusinessContextFactory());
 
         assertNull(businessContextFactory.getBusinessContextCustomizers());
         businessContextFactory.setBusinessContextCustomizers(customizers);

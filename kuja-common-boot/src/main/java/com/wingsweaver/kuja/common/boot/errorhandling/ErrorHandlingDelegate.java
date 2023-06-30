@@ -9,6 +9,17 @@ import com.wingsweaver.kuja.common.boot.context.BusinessContext;
  */
 public interface ErrorHandlingDelegate {
     /**
+     * 创建错误处理上下文。
+     *
+     * @param businessContext 业务上下文
+     * @param error           要处理的异常
+     * @param preProcessor    预处理
+     * @return 错误处理上下文
+     */
+    ErrorHandlerContext createErrorHandlerContext(BusinessContext businessContext, Throwable error,
+                                                  ErrorHandlerContextCustomizer preProcessor);
+
+    /**
      * 处理异常。
      *
      * @param businessContext 业务上下文

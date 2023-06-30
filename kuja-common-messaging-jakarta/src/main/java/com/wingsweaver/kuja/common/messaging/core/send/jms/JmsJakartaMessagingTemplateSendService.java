@@ -31,7 +31,7 @@ public class JmsJakartaMessagingTemplateSendService extends
         // 如果是字符串的话，尝试从 Bean 中获取
         if (destination instanceof CharSequence && this.resolveDestinationFromBean) {
             try {
-                destination = this.getApplicationContext().getBean(destination.toString(), Destination.class);
+                destination = this.getBean(destination.toString(), Destination.class, true);
             } catch (Exception ignored) {
                 // 忽略此错误
             }

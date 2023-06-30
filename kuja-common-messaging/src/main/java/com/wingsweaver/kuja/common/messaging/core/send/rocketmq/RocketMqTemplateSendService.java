@@ -3,12 +3,15 @@ package com.wingsweaver.kuja.common.messaging.core.send.rocketmq;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
 import com.wingsweaver.kuja.common.messaging.core.send.messaging.AbstractMessagingTemplateSendService;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -19,7 +22,10 @@ import java.util.List;
  */
 @Getter
 @Setter
+@SuppressWarnings("PMD.GuardLogStatement")
 public class RocketMqTemplateSendService extends AbstractMessagingTemplateSendService<String, RocketMQTemplate, RocketMqMessageSendOptions> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RocketMqTemplateSendService.class);
+
     /**
      * 是否是异步模式。
      */
@@ -71,18 +77,21 @@ public class RocketMqTemplateSendService extends AbstractMessagingTemplateSendSe
         };
 
         if (this.shouldSendOrderly(orderHashKey)) {
-            // 不使用顺序发送
-            if (timeout > 0) {
-                this.getMessagingTemplate().asyncSend(destination, payload, sendCallback, timeout);
-            } else {
-                this.getMessagingTemplate().asyncSend(destination, payload, sendCallback);
-            }
-        } else {
             // 使用顺序发送
+            LogUtil.trace(LOGGER, "Send RocketMQ message asynchronously & orderly to destination: {}, order hash key: {}, context id = {}",
+                    destination, orderHashKey, context.getId());
             if (timeout > 0) {
                 this.getMessagingTemplate().asyncSendOrderly(destination, payload, orderHashKey, sendCallback, timeout);
             } else {
                 this.getMessagingTemplate().asyncSendOrderly(destination, payload, orderHashKey, sendCallback);
+            }
+        } else {
+            // 不使用顺序发送
+            LogUtil.trace(LOGGER, "Send RocketMQ message asynchronously to destination: {}, context id = {}", destination, context.getId());
+            if (timeout > 0) {
+                this.getMessagingTemplate().asyncSend(destination, payload, sendCallback, timeout);
+            } else {
+                this.getMessagingTemplate().asyncSend(destination, payload, sendCallback);
             }
         }
     }
@@ -116,18 +125,21 @@ public class RocketMqTemplateSendService extends AbstractMessagingTemplateSendSe
         long timeout = options.getTimeout();
 
         if (this.shouldSendOrderly(orderHashKey)) {
-            // 不使用顺序发送
-            if (timeout > 0) {
-                this.getMessagingTemplate().syncSend(destination, payload, timeout);
-            } else {
-                this.getMessagingTemplate().syncSend(destination, payload);
-            }
-        } else {
             // 使用顺序发送
+            LogUtil.trace(LOGGER, "Send RocketMQ message orderly to destination: {}, order hash key: {}, context id = {}",
+                    destination, orderHashKey, context.getId());
             if (timeout > 0) {
                 this.getMessagingTemplate().syncSendOrderly(destination, payload, orderHashKey, timeout);
             } else {
                 this.getMessagingTemplate().syncSendOrderly(destination, payload, orderHashKey);
+            }
+        } else {
+            // 不使用顺序发送
+            LogUtil.trace(LOGGER, "Send RocketMQ message to destination: {}, context id = {}", destination, context.getId());
+            if (timeout > 0) {
+                this.getMessagingTemplate().syncSend(destination, payload, timeout);
+            } else {
+                this.getMessagingTemplate().syncSend(destination, payload);
             }
         }
     }

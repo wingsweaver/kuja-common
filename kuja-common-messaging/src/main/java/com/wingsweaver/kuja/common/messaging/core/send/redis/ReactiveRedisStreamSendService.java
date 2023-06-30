@@ -2,8 +2,11 @@ package com.wingsweaver.kuja.common.messaging.core.send.redis;
 
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendCallback;
 import com.wingsweaver.kuja.common.messaging.core.send.MessageSendContext;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 
@@ -15,7 +18,10 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
  */
 @Getter
 @Setter
+@SuppressWarnings("PMD.GuardLogStatement")
 public class ReactiveRedisStreamSendService extends AbstractRedisStreamSendService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveRedisStreamSendService.class);
+
     /**
      * RedisTemplate 实例。
      */
@@ -29,6 +35,7 @@ public class ReactiveRedisStreamSendService extends AbstractRedisStreamSendServi
     @Override
     protected void sendMessage(MessageSendContext context, RedisSendOptions options, MessageSendCallback callback) {
         ObjectRecord<String, Object> record = this.resolveRecord(context, options);
+        LogUtil.trace(LOGGER, "Send Reactive-Redis-Stream message to stream {}, context id = {}", record.getStream(), context.getId());
         this.redisTemplate.opsForStream().add(record)
                 .doOnError(error -> this.onError(context, error, callback))
                 .subscribe(recordId -> {
@@ -50,7 +57,7 @@ public class ReactiveRedisStreamSendService extends AbstractRedisStreamSendServi
      */
     protected void initRedisTemplate() {
         if (this.redisTemplate == null) {
-            this.redisTemplate = this.getApplicationContext().getBean(ReactiveStringRedisTemplate.class);
+            this.redisTemplate = this.getBean(ReactiveStringRedisTemplate.class);
         }
     }
 }

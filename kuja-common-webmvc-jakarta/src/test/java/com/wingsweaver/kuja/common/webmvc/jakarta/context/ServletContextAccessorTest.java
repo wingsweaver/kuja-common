@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webmvc.jakarta.context;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class ServletContextAccessorTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
 
         // servletRequest

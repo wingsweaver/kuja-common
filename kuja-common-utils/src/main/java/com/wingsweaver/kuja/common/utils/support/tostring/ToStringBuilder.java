@@ -3,12 +3,15 @@ package com.wingsweaver.kuja.common.utils.support.tostring;
 import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
 import com.wingsweaver.kuja.common.utils.constants.Orders;
 import com.wingsweaver.kuja.common.utils.diag.AssertArgs;
+import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.support.lang.ObjectUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -22,6 +25,8 @@ public final class ToStringBuilder {
     private ToStringBuilder() {
         // 禁止实例化
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToStringBuilder.class);
 
     /**
      * 转换器实例的列表。
@@ -47,21 +52,30 @@ public final class ToStringBuilder {
     private static final AtomicReference<ToStringConfig> DEFAULT_CONFIG;
 
     static {
-        ToStringConfig.Builder builder = new ToStringConfig.Builder(new HashMap<>(BufferSizes.SMALL));
-        DefaultToStringConfigCustomizer.INSTANCE.customize(builder);
+        ToStringConfig toStringConfig = new ToStringConfig(new HashMap<>(BufferSizes.TINY));
         SpringFactoriesLoader.loadFactories(ToStringConfigCustomizer.class, null)
                 .stream()
                 .sorted(Orders::compareReversed)
-                .forEach(customizer -> customizer.customize(builder));
-        DEFAULT_CONFIG = new AtomicReference<>(builder.build());
+                .forEach(customizer -> customizer.customize(toStringConfig));
+        DEFAULT_CONFIG = new AtomicReference<>(toStringConfig);
     }
 
+    /**
+     * 获取默认的转换设置的克隆实例。
+     *
+     * @return 转换设置的克隆实例
+     */
     public static ToStringConfig getDefaultConfig() {
-        return DEFAULT_CONFIG.get();
+        return new ToStringConfig(DEFAULT_CONFIG.get());
     }
 
+    /**
+     * 设置默认的转换设置。
+     *
+     * @param config 转换设置
+     */
     public static void setDefaultConfig(ToStringConfig config) {
-        Objects.requireNonNull(config, "[config] is null");
+        AssertArgs.Named.notNull("config", config);
         DEFAULT_CONFIG.set(config);
     }
 
@@ -72,23 +86,40 @@ public final class ToStringBuilder {
      * @param config  转换设置，必须指定
      * @param builder 保存转换结果的 StringBuilder
      */
+    @SuppressWarnings("PMD.GuardLogStatement")
     public static void toStringBuilder(Object object, ToStringConfig config, StringBuilder builder) {
         // 校验参数
         AssertArgs.Named.notNull("builder", builder);
         if (config == null) {
-            config = DEFAULT_CONFIG.get();
+            config = getDefaultConfig();
         }
 
         // 执行转换
         for (ToStringConverter converter : CONVERTERS) {
-            if (converter.toString(object, builder, config)) {
-                // 找到可以处理的 converter 并进行转换之后，中止后续的处理
-                return;
+            try {
+                if (converter.toString(object, builder, config)) {
+                    // 找到可以处理的 converter 并进行转换之后，中止后续的处理
+                    return;
+                }
+            } catch (Exception ex) {
+                // 忽略此处的错误，以免引起意外的宕机
+                if (object == null) {
+                    LogUtil.error(LOGGER, ex, "ToStringConverter {} throws an exception with null object.", converter);
+                } else {
+                    LogUtil.error(LOGGER, ex, "ToStringConverter {} throws an exception with object type {}.",
+                            converter, object.getClass());
+                }
             }
         }
 
         // 默认的处理函数
-        builder.append(object);
+        if (object == config.getObjectToString()) {
+            // 如果是同一个实例触发了 toString 处理的话，不直接使用 object.toString，以避免产生堆栈溢出
+            builder.append(ObjectUtil.originalToString(object));
+        } else {
+            // 如果不是的话，使用 object.toString() 来进行转换
+            builder.append(object);
+        }
     }
 
     /**
@@ -109,16 +140,13 @@ public final class ToStringBuilder {
      * @param configCustomizer 转换设置的定制处理（可以不指定）
      * @param builder          保存转换结果的 StringBuilder
      */
-    public static void toStringBuilder(Object object, Consumer<ToStringConfig.Builder> configCustomizer, StringBuilder builder) {
+    public static void toStringBuilder(Object object, Consumer<ToStringConfig> configCustomizer, StringBuilder builder) {
         AssertArgs.Named.notNull("builder", builder);
-
-        if (configCustomizer == null) {
-            toStringBuilder(object, getDefaultConfig(), builder);
-        } else {
-            ToStringConfig.Builder configBuilder = getDefaultConfig().mutable();
-            configCustomizer.accept(configBuilder);
-            toStringBuilder(object, configBuilder.build(), builder);
+        ToStringConfig config = getDefaultConfig();
+        if (configCustomizer != null) {
+            configCustomizer.accept(config);
         }
+        toStringBuilder(object, config, builder);
     }
 
     /**
@@ -141,7 +169,7 @@ public final class ToStringBuilder {
      * @param configCustomizer 转换设置的定制处理（可以不指定）
      * @return 转换结果
      */
-    public static String toString(Object object, Consumer<ToStringConfig.Builder> configCustomizer) {
+    public static String toString(Object object, Consumer<ToStringConfig> configCustomizer) {
         StringBuilder builder = new StringBuilder();
         toStringBuilder(object, configCustomizer, builder);
         return builder.toString();

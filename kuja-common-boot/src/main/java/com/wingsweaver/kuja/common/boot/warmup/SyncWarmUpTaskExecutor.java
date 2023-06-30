@@ -1,6 +1,6 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationContext;
 
 /**
  * 同步执行预热任务的 {@link WarmUpTaskExecutor} 实现。
@@ -8,8 +8,8 @@ import org.springframework.context.ApplicationEventPublisher;
  * @author wingsweaver
  */
 public class SyncWarmUpTaskExecutor extends AbstractWarmUpTaskExecutor {
-    public SyncWarmUpTaskExecutor(ApplicationEventPublisher eventPublisher) {
-        super(eventPublisher);
+    public SyncWarmUpTaskExecutor(ApplicationContext applicationContext) {
+        super(applicationContext);
     }
 
     @Override

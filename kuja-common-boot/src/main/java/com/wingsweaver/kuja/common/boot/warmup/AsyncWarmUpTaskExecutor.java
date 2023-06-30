@@ -1,6 +1,6 @@
 package com.wingsweaver.kuja.common.boot.warmup;
 
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationContext;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -11,15 +11,29 @@ import java.util.concurrent.Executor;
  * @author wingsweaver
  */
 public class AsyncWarmUpTaskExecutor extends AbstractWarmUpTaskExecutor {
+    /**
+     * 使用的异步执行器。
+     */
     private final Executor executor;
 
-    public AsyncWarmUpTaskExecutor(ApplicationEventPublisher eventPublisher, Executor executor) {
-        super(eventPublisher);
+    /**
+     * 构造函数。
+     *
+     * @param applicationContext 应用上下文
+     * @param executor           异步执行器
+     */
+    public AsyncWarmUpTaskExecutor(ApplicationContext applicationContext, Executor executor) {
+        super(applicationContext);
         this.executor = executor;
     }
 
-    public AsyncWarmUpTaskExecutor(ApplicationEventPublisher eventPublisher) {
-        this(eventPublisher, null);
+    /**
+     * 构造函数。
+     *
+     * @param applicationContext 应用上下文
+     */
+    public AsyncWarmUpTaskExecutor(ApplicationContext applicationContext) {
+        this(applicationContext, null);
     }
 
     @Override
@@ -41,6 +55,13 @@ public class AsyncWarmUpTaskExecutor extends AbstractWarmUpTaskExecutor {
         }
     }
 
+    /**
+     * 在指定的线程池中执行预热任务。
+     *
+     * @param record   预热执行记录
+     * @param tasks    预热任务
+     * @param callback 预热任务执行回调
+     */
     protected void executeWithExecutor(WarmUpExecution record, WarmUpTask[] tasks, WarmUpTaskExecutionCallback callback) {
         CompletableFuture<?>[] futures = new CompletableFuture[tasks.length];
         for (int i = 0; i < tasks.length; i++) {
@@ -50,6 +71,13 @@ public class AsyncWarmUpTaskExecutor extends AbstractWarmUpTaskExecutor {
         CompletableFuture.allOf(futures).whenCompleteAsync((v, t) -> this.complete(record, callback), this.executor);
     }
 
+    /**
+     * 在默认的线程池中执行预热任务。
+     *
+     * @param record   预热执行记录
+     * @param tasks    预热任务
+     * @param callback 预热任务执行回调
+     */
     protected void executeWithoutExecutor(WarmUpExecution record, WarmUpTask[] tasks, WarmUpTaskExecutionCallback callback) {
         CompletableFuture<?>[] futures = new CompletableFuture[tasks.length];
         for (int i = 0; i < tasks.length; i++) {

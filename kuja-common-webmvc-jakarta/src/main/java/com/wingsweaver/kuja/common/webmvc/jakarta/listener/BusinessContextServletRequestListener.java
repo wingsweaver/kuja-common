@@ -3,8 +3,9 @@ package com.wingsweaver.kuja.common.webmvc.jakarta.listener;
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextType;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.boot.context.BusinessContextTypeSetter;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.webmvc.common.constants.KujaCommonWebMvcOrders;
 import com.wingsweaver.kuja.common.webmvc.jakarta.context.ServletContextAccessor;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
@@ -15,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Ordered;
 
 /**
@@ -26,7 +26,7 @@ import org.springframework.core.Ordered;
 @Getter
 @Setter
 @WebListener("kujaServletRequestListener")
-public class BusinessContextServletRequestListener implements ServletRequestListener, InitializingBean, Ordered {
+public class BusinessContextServletRequestListener extends AbstractComponent implements ServletRequestListener, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessContextServletRequestListener.class);
 
     private BusinessContextFactory businessContextFactory;
@@ -55,14 +55,31 @@ public class BusinessContextServletRequestListener implements ServletRequestList
     }
 
     private void initializeBusinessContext(ServletRequestEvent sre, BusinessContext businessContext) {
+        // 设置 BusinessContextType
+        if (businessContext instanceof BusinessContextTypeSetter setter) {
+            setter.setContextType(BusinessContextType.Web.Blocked.JakartaEE.SERVLET);
+        }
+
+        // 按照 ServletContextAccessor 进行设置
         ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
-        accessor.setContextType(BusinessContextType.Web.Blocked.J2EE.SERVLET);
         accessor.setOriginalRequest(sre.getServletRequest());
         accessor.setServletRequest(sre.getServletRequest());
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 businessContextFactory
+        this.initializeBusinessContextFactory();
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initializeBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = this.getBean(BusinessContextFactory.class);
+        }
     }
 }

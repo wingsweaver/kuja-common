@@ -5,9 +5,10 @@ import com.wingsweaver.kuja.common.boot.context.BusinessContextCustomizer;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextFactory;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextType;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.boot.context.BusinessContextTypeSetter;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
+import com.wingsweaver.kuja.common.utils.support.spring.BeanUtil;
 import com.wingsweaver.kuja.common.webmvc.common.constants.KujaCommonWebMvcOrders;
 import com.wingsweaver.kuja.common.webmvc.jakarta.context.ServletContextAccessor;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
@@ -23,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -40,10 +43,15 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class BusinessContextFilter extends GenericFilterBean implements Ordered {
+public class BusinessContextFilter extends GenericFilterBean implements ApplicationContextAware, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessContextFilter.class);
 
     private static final String KEY_INITIALIZED = ClassUtil.resolveKey(BusinessContextFilter.class, "initialized");
+
+    /**
+     * Spring 应用上下文。
+     */
+    private ApplicationContext applicationContext;
 
     /**
      * 业务上下文工厂类的实例。
@@ -86,11 +94,15 @@ public class BusinessContextFilter extends GenericFilterBean implements Ordered 
     }
 
     private void initializeBusinessContext(BusinessContext businessContext, ServletRequest request, ServletResponse response) {
-        // 默认的初始化处理
+        // 设置 BusinessContextType
+        if (businessContext instanceof BusinessContextTypeSetter setter) {
+            setter.setContextType(BusinessContextType.Web.Blocked.JakartaEE.SERVLET);
+        }
+
+        // 按照 ServletContextAccessor 进行设置
+        ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
-        accessor.setContextType(BusinessContextType.Web.Blocked.JakartaEE.SERVLET);
         accessor.setOriginalRequest(request);
         accessor.setOriginalResponse(response);
         accessor.setServerHttpRequest(new ServletServerHttpRequest(httpServletRequest));
@@ -111,7 +123,28 @@ public class BusinessContextFilter extends GenericFilterBean implements Ordered 
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
 
-        AssertState.Named.notNull("businessContextFactory", this.getBusinessContextFactory());
-        AssertState.Named.notNull("businessContextCustomizers", this.getBusinessContextCustomizers());
+        // 初始化 businessContextFactory
+        this.initBusinessContextFactory();
+
+        // 初始化 businessContextCustomizers
+        this.initBusinessContextCustomizers();
+    }
+
+    /**
+     * 初始化 businessContextCustomizers。
+     */
+    protected void initBusinessContextCustomizers() {
+        if (this.businessContextCustomizers == null) {
+            this.businessContextCustomizers = BeanUtil.getBeansOrdered(this.applicationContext, BusinessContextCustomizer.class);
+        }
+    }
+
+    /**
+     * 初始化 businessContextFactory。
+     */
+    protected void initBusinessContextFactory() {
+        if (this.businessContextFactory == null) {
+            this.businessContextFactory = BeanUtil.getBean(this.applicationContext, BusinessContextFactory.class);
+        }
     }
 }

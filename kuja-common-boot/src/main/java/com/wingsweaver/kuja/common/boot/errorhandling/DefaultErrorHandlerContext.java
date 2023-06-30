@@ -1,11 +1,11 @@
 package com.wingsweaver.kuja.common.boot.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
-import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
-import com.wingsweaver.kuja.common.utils.model.attributes.MapMutableAttributes;
+import com.wingsweaver.kuja.common.utils.model.context.MapContext;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -14,30 +14,47 @@ import java.util.function.Supplier;
  *
  * @author wingsweaver
  */
-public class DefaultErrorHandlerContext extends MapMutableAttributes<String> implements ErrorHandlerContext {
-    public static final String KEY_BUSINESS_CONTEXT = ClassUtil.resolveKey(BusinessContext.class);
-
+@Getter
+@Setter
+public class DefaultErrorHandlerContext extends MapContext implements ErrorHandlerContext {
     public DefaultErrorHandlerContext(Map<String, ?> map) {
         super(map);
     }
 
     public DefaultErrorHandlerContext(int initCapacity) {
-        this(new HashMap<>(initCapacity));
+        super(initCapacity);
     }
 
     public DefaultErrorHandlerContext() {
-        this(BufferSizes.SMALL);
+        // 什么也不做
     }
+
+    public DefaultErrorHandlerContext(ErrorHandlerContext context) {
+        super(context);
+    }
+
+    /**
+     * Key: BusinessContext。
+     */
+    public static final String KEY_BUSINESS_CONTEXT = ClassUtil.resolveKey(BusinessContext.class);
 
     @Override
     public BusinessContext getBusinessContext() {
         return this.getAttribute(KEY_BUSINESS_CONTEXT);
     }
 
+    /**
+     * 设置业务上下文。
+     *
+     * @param businessContext 业务上下文
+     */
     public void setBusinessContext(BusinessContext businessContext) {
         this.setAttribute(KEY_BUSINESS_CONTEXT, businessContext);
     }
 
+    /**
+     * Key: 输入的原始错误。
+     */
     public static final String KEY_INPUT_ERROR = ClassUtil.resolveKey(DefaultErrorHandlerContext.class, "inputError");
 
     @Override
@@ -45,10 +62,18 @@ public class DefaultErrorHandlerContext extends MapMutableAttributes<String> imp
         return this.getAttribute(KEY_INPUT_ERROR);
     }
 
+    /**
+     * 设置输入的原始错误。
+     *
+     * @param error 输入的原始错误
+     */
     public void setInputError(Throwable error) {
         this.setAttribute(KEY_INPUT_ERROR, error);
     }
 
+    /**
+     * Key: 输出的待抛出的错误。
+     */
     public static final String KEY_OUTPUT_ERROR = ClassUtil.resolveKey(DefaultErrorHandlerContext.class, "outputError");
 
     @Override
@@ -61,6 +86,9 @@ public class DefaultErrorHandlerContext extends MapMutableAttributes<String> imp
         this.setAttribute(KEY_OUTPUT_ERROR, error);
     }
 
+    /**
+     * Key: 是否已经处理。
+     */
     public static final String KEY_HANDLED = ClassUtil.resolveKey(DefaultErrorHandlerContext.class, "handled");
 
     @Override
@@ -73,6 +101,9 @@ public class DefaultErrorHandlerContext extends MapMutableAttributes<String> imp
         this.setAttribute(KEY_HANDLED, handled);
     }
 
+    /**
+     * Key: 返回结果。
+     */
     public static final String KEY_RETURN_VALUE = ClassUtil.resolveKey(DefaultErrorHandlerContext.class, "returnValue");
 
     @Override

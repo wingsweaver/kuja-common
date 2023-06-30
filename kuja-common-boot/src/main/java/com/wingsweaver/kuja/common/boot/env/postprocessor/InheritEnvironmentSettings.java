@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot.env.postprocessor;
 
 import com.wingsweaver.kuja.common.boot.constants.KujaCommonBootKeys;
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,7 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = KujaCommonBootKeys.PREFIX_INHERIT_ENVIRONMENT_SETTINGS)
-public class InheritEnvironmentSettings {
+public class InheritEnvironmentSettings extends AbstractPojo {
     private static final String[] DEFAULT_INCLUDES = new String[]{
             "spring.application.[a-zA-Z0-9\\-_]*", "spring.cloud.(.)*", "-spring.cloud.client.(.)*"
     };

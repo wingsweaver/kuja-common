@@ -21,4 +21,9 @@ public class ValueWrapper<T> {
      * 实际数据。
      */
     private T value;
+
+    @Override
+    public String toString() {
+        return "ValueWrapper{value=" + value + '}';
+    }
 }

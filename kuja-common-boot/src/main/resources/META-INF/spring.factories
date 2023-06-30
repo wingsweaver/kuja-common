@@ -10,8 +10,12 @@ com.wingsweaver.kuja.common.boot.env.postprocessor.PresetEnvironmentProcessor=\
 com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultPresetEnvironmentProcessor
 
 com.wingsweaver.kuja.common.boot.env.postprocessor.FallbackEnvironmentProcessor=\
-com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultFallbackEnvironmentProcessor
+com.wingsweaver.kuja.common.boot.env.postprocessor.DefaultFallbackEnvironmentProcessor,\
+com.wingsweaver.kuja.common.boot.appinfo.AppInfoFallbackEnvironmentProcessor
 
 org.springframework.context.ApplicationListener=\
 com.wingsweaver.kuja.common.boot.io.OptionalProtocolResolverRegistrar,\
 com.wingsweaver.kuja.common.boot.env.postprocessor.InheritEnvironmentPropertySourceHolder
+
+org.springframework.boot.SpringBootExceptionReporter=\
+com.wingsweaver.kuja.common.boot.errorreporting.KujaSpringBootExceptionReporter

@@ -3,6 +3,7 @@ package com.wingsweaver.kuja.common.web.errorhandling;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandler;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlerContext;
 import com.wingsweaver.kuja.common.boot.exception.BusinessException;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.util.CollectionUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import com.wingsweaver.kuja.common.web.constants.KujaCommonWebOrders;
@@ -20,7 +21,7 @@ import java.util.Map;
  *
  * @author wingsweaver
  */
-public class ResponseDataErrorHandler implements ErrorHandler {
+public class ResponseDataErrorHandler extends AbstractComponent implements ErrorHandler {
     public static final String KEY_RESPONSE_DATA = "response-data";
 
     public static final String KEY_RESPONSE_STATUS = KEY_RESPONSE_DATA + ".status";

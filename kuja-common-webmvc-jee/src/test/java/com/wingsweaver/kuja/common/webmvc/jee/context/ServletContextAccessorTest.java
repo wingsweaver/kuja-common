@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.webmvc.jee.context;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class ServletContextAccessorTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         ServletContextAccessor accessor = new ServletContextAccessor(businessContext);
 
         // servletRequest

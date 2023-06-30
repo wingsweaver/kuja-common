@@ -14,17 +14,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BusinessContextAccessorTest {
     @Test
     void test() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         BusinessContextAccessor accessor = new BusinessContextAccessor(businessContext);
         assertSame(businessContext, accessor.getContext());
 
-        assertNull(accessor.getContextType());
-        assertFalse(accessor.isContextType(DayOfWeek.class));
-        accessor.setContextType(DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.MONDAY, accessor.getContextType());
-        assertTrue(accessor.isContextType(DayOfWeek.class));
-        assertTrue(accessor.isContextType(DayOfWeek.MONDAY));
-        assertFalse(accessor.isContextType(DayOfWeek.TUESDAY));
+        BusinessContextTypeSetter setter = (BusinessContextTypeSetter) businessContext;
+        assertNull(businessContext.getContextType());
+        assertFalse(businessContext.isContextType(DayOfWeek.class));
+        setter.setContextType(TestBusinessContextType.TOM);
+        assertEquals(TestBusinessContextType.TOM, businessContext.getContextType());
+        assertTrue(businessContext.isContextType(TestBusinessContextType.class));
+        assertTrue(businessContext.isContextType(TestBusinessContextType.TOM));
+        assertFalse(businessContext.isContextType(TestBusinessContextType.JERRY));
 
         assertNull(accessor.getError());
         Exception error = new ExtendedRuntimeException("test-exception");
@@ -41,5 +42,11 @@ class BusinessContextAccessorTest {
         Object handler2 = new Object();
         accessor.setHandlerIfAbsent(handler2);
         assertSame(handler, accessor.getHandler());
+    }
+
+    enum TestBusinessContextType implements BusinessContextType {
+        TOM,
+
+        JERRY
     }
 }

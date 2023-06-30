@@ -60,7 +60,7 @@ class DynamicLogContextWebFilterTest {
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         DynamicLogContextWebFilter filter = new DynamicLogContextWebFilter();
         filter.afterPropertiesSet();
         assertEquals(KujaCommonWebFluxOrders.LOG_CONTEXT_WEB_FILTER, filter.getOrder());

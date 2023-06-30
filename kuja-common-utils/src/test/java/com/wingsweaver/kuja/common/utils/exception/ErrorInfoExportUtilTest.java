@@ -37,7 +37,7 @@ class ErrorInfoExportUtilTest {
             Map<String, Object> map = ErrorInfoExportUtil.export(exception, ErrorInfoExportUtilTest::allowAll);
             assertTrue(map.containsKey("cause"));
             assertTrue(map.containsKey(ErrorInfoExportUtil.KEY_CLASS));
-            assertFalse(map.containsKey(ErrorInfoExportUtil.KEY_EXTEND));
+            assertTrue(map.containsKey(ErrorInfoExportUtil.KEY_EXTEND));
             assertTrue(map.containsKey("dummy"));
             String dummyValue = map.get("dummy").toString();
             assertTrue(dummyValue.startsWith(DummyErrorInfoExporterFactory.PREFIX));
@@ -50,7 +50,7 @@ class ErrorInfoExportUtilTest {
             Map<String, Object> map = ErrorInfoExportUtil.export(exception, ErrorInfoExportUtilTest::allowAll);
             assertTrue(map.containsKey(ErrorInfoExportUtil.KEY_EXTEND));
             Map<String, Object> extendMap = (Map<String, Object>) map.get(ErrorInfoExportUtil.KEY_EXTEND);
-            assertEquals(3, extendMap.size());
+            assertEquals(4, extendMap.size());
             assertTrue(extendMap.containsKey("thread"));
             assertTrue(extendMap.containsKey("timestamp"));
             assertTrue(extendMap.containsKey("uuid"));

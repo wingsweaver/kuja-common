@@ -33,25 +33,51 @@ public final class EnvironmentResolverUtil {
 
     private static final AtomicReference<EnvironmentResolver> ENVIRONMENT_RESOLVER = new AtomicReference<>(null);
 
+    /**
+     * 获取当前的环境解析器。
+     *
+     * @return 当前的环境解析器
+     */
     public static EnvironmentResolver getEnvironmentResolver() {
         EnvironmentResolver environmentResolver = ENVIRONMENT_RESOLVER.get();
         return (environmentResolver != null) ? environmentResolver : COMPOSITE_ENVIRONMENT_RESOLVER;
     }
 
+    /**
+     * 设置当前的环境解析器。
+     *
+     * @param environmentResolver 当前的环境解析器
+     */
     public static void setEnvironmentResolver(EnvironmentResolver environmentResolver) {
         ENVIRONMENT_RESOLVER.set(environmentResolver);
     }
 
+    /**
+     * 解析当前的环境。
+     *
+     * @return 当前的环境
+     */
     public static ConfigurableEnvironment resolveEnvironment() {
         return getEnvironmentResolver().resolve();
     }
 
     private static final ThreadSafeValue<ConfigurableEnvironment> CONFIGURABLE_ENVIRONMENT = new ReadWriteLockedValue<>(null);
 
+    /**
+     * 获取当前的环境。
+     *
+     * @return 当前的环境
+     */
     public static ConfigurableEnvironment getEnvironment() {
         return CONFIGURABLE_ENVIRONMENT.get();
     }
 
+    /**
+     * 获取当前的环境。
+     *
+     * @param autoResolve 如果当前的环境为空，是否自动解析环境
+     * @return 当前的环境
+     */
     public static ConfigurableEnvironment getEnvironment(boolean autoResolve) {
         if (autoResolve) {
             return CONFIGURABLE_ENVIRONMENT.compute(environment -> environment != null ? environment : resolveEnvironment());
@@ -60,6 +86,11 @@ public final class EnvironmentResolverUtil {
         }
     }
 
+    /**
+     * 设置当前的环境。
+     *
+     * @param environment 当前的环境
+     */
     public static void setConfigurableEnvironment(ConfigurableEnvironment environment) {
         CONFIGURABLE_ENVIRONMENT.set(environment);
     }

@@ -1,5 +1,7 @@
 package com.wingsweaver.kuja.common.utils.model.tuple;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
+
 import java.util.Arrays;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Arrays;
  *
  * @author wingsweaver
  */
-public abstract class AbstractTuple {
+public abstract class AbstractTuple extends AbstractPojo {
     /**
      * 元素数量。
      */

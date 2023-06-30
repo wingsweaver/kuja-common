@@ -1,11 +1,10 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
 import com.wingsweaver.kuja.common.boot.i18n.MessageHelper;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Optional;
 
@@ -16,8 +15,7 @@ import java.util.Optional;
  */
 @Getter
 @Setter
-public class DefaultErrorDefinitionAttributes implements ErrorDefinitionAttributes,
-        InitializingBean {
+public class DefaultErrorDefinitionAttributes extends AbstractComponent implements ErrorDefinitionAttributes {
     /**
      * 消息帮助类。
      */
@@ -65,8 +63,31 @@ public class DefaultErrorDefinitionAttributes implements ErrorDefinitionAttribut
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("properties", this.getProperties());
-        AssertState.Named.notNull("messageHelper", this.getMessageHelper());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 properties
+        this.initProperties();
+
+        // 初始化 messageHelper
+        this.initMessageHelper();
+    }
+
+    /**
+     * 初始化 messageHelper。
+     */
+    protected void initMessageHelper() {
+        if (this.messageHelper == null) {
+            this.messageHelper = this.getBean(MessageHelper.class);
+        }
+    }
+
+    /**
+     * 初始化 properties。
+     */
+    protected void initProperties() {
+        if (this.properties == null) {
+            this.properties = this.getBean(ErrorDefinitionProperties.class);
+        }
     }
 }

@@ -10,6 +10,9 @@ import org.springframework.core.io.ResourceLoader;
  * @author wingsweaver
  */
 public class OptionalProtocolResolver implements ProtocolResolver {
+    /**
+     * 可选（非必须） Resource 的前缀。
+     */
     public static final String PREFIX_OPTIONAL = OptionalResource.PREFIX_OPTIONAL;
 
     @SuppressWarnings("ConstantConditions")

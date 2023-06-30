@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.web.errorhandling;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
 import com.wingsweaver.kuja.common.utils.support.EmptyChecker;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Getter
 @Setter
-public class ResponseData implements EmptyChecker {
+public class ResponseData extends AbstractPojo implements EmptyChecker {
     /**
      * 状态码。
      */

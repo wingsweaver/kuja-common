@@ -131,7 +131,7 @@ class GlobalErrorControllerTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         GlobalErrorController controller = new GlobalErrorController();
 
         assertNull(controller.getErrorProperties());

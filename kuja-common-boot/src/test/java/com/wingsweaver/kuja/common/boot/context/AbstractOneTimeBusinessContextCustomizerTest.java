@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class AbstractOneTimeBusinessContextCustomizerTest {
     @Test
     void test() {
-        BusinessContext context = BusinessContext.create();
+        BusinessContext context = new MapBusinessContext();
         assertFalse(context.hasAttribute("sum"));
 
         int count = 10;

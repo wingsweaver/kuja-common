@@ -3,6 +3,7 @@ package com.wingsweaver.kuja.common.webmvc.jakarta.interceptor;
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextAccessor;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
 import com.wingsweaver.kuja.common.webmvc.jakarta.util.ServletRequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  *
  * @author wingsweaver
  */
-public class BusinessContextHandlerInterceptor implements HandlerInterceptor {
+public class BusinessContextHandlerInterceptor extends AbstractComponent implements HandlerInterceptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessContextHandlerInterceptor.class);
 
     public static final String KEY_PRE_HANDLED = ClassUtil.resolveKey(BusinessContextHandlerInterceptor.class, "preHandled");

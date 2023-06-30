@@ -1,7 +1,7 @@
 package com.wingsweaver.kuja.common.web.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlerContext;
-import com.wingsweaver.kuja.common.utils.model.attributes.AttributesAccessor;
+import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlerContextAccessor;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
 import lombok.Getter;
 
@@ -11,9 +11,7 @@ import lombok.Getter;
  * @author wingsweaver
  */
 @Getter
-public class WebErrorHandlerContextAccessor extends AttributesAccessor<String> {
-    private final ErrorHandlerContext errorHandlerContext;
-
+public class WebErrorHandlerContextAccessor extends ErrorHandlerContextAccessor {
     /**
      * 构造函数。
      *
@@ -21,7 +19,6 @@ public class WebErrorHandlerContextAccessor extends AttributesAccessor<String> {
      */
     public WebErrorHandlerContextAccessor(ErrorHandlerContext errorHandlerContext) {
         super(errorHandlerContext);
-        this.errorHandlerContext = errorHandlerContext;
     }
 
     public static final String KEY_RESPONSE_DATA = ClassUtil.resolveKey(ResponseData.class);

@@ -2,6 +2,7 @@ package com.wingsweaver.kuja.common.boot.returnvalue;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class AbstractReturnValueCustomizer implements ReturnValueCustomizer {
+public abstract class AbstractReturnValueCustomizer extends AbstractComponent implements ReturnValueCustomizer {
+    /**
+     * Key: 是否启用。
+     */
     @Getter
     private final String keyEnabled = ClassUtil.resolveKey(this.getClass(), "enabled");
 
@@ -38,6 +42,12 @@ public abstract class AbstractReturnValueCustomizer implements ReturnValueCustom
      */
     protected abstract void customize(BusinessContext businessContext, ReturnValue returnValue);
 
+    /**
+     * 判断是否启用。
+     *
+     * @param businessContext 业务上下文
+     * @return 如果启用，则返回 true
+     */
     protected boolean isEnabled(BusinessContext businessContext) {
         if (businessContext == null) {
             return this.isEnabled();

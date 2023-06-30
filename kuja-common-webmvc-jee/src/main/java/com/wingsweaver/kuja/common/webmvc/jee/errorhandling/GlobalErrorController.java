@@ -2,9 +2,7 @@ package com.wingsweaver.kuja.common.webmvc.jee.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextHolder;
-import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlingDelegate;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
-import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueFactory;
 import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
@@ -59,15 +57,6 @@ public class GlobalErrorController extends AbstractResponseEntityReturnValueErro
      */
     private ErrorProperties errorProperties;
 
-    /**
-     * {@link ErrorHandlingDelegate} 实例。
-     */
-    private ErrorHandlingDelegate errorHandlingDelegate;
-
-    /**
-     * {@link ReturnValueFactory} 实例。
-     */
-    private ReturnValueFactory returnValueFactory;
 
     /**
      * 渲染错误结果。
@@ -100,7 +89,7 @@ public class GlobalErrorController extends AbstractResponseEntityReturnValueErro
      * @return 处理结果
      */
     protected Object fallbackRender(BusinessContext businessContext, Throwable error) {
-        ReturnValue returnValue = this.returnValueFactory.fail(error);
+        ReturnValue returnValue = this.getReturnValueFactory().fail(error);
         return ResponseEntity.ok(returnValue);
     }
 
@@ -144,11 +133,23 @@ public class GlobalErrorController extends AbstractResponseEntityReturnValueErro
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("errorProperties", this.getErrorProperties());
-        AssertState.Named.notNull("errorAttributes", this.getErrorAttributes());
-        AssertState.Named.notNull("errorHandlingDelegate", this.getErrorHandlingDelegate());
-        AssertState.Named.notNull("returnValueFactory", this.getReturnValueFactory());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 校验 errorProperties
+        AssertState.Named.notNull("errorProperties", this.errorProperties);
+
+        // 初始化 errorAttributes
+        this.initErrorAttributes();
+    }
+
+    /**
+     * 初始化 errorAttributes。
+     */
+    protected void initErrorAttributes() {
+        if (this.errorAttributes == null) {
+            this.errorAttributes = this.getBean(ErrorAttributes.class);
+        }
     }
 
     @Override

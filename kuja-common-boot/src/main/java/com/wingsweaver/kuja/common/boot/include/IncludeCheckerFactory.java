@@ -20,11 +20,22 @@ import java.util.regex.Pattern;
  * @author wingsweaver
  */
 public class IncludeCheckerFactory {
+    /**
+     * 全局的设置。
+     */
     @Getter
     private final IncludeSettings settings;
 
+    /**
+     * 具体的包含项目的列表。
+     */
     private final List<IncludeItem> includeItems;
 
+    /**
+     * 构造函数。
+     *
+     * @param settings 全局的设置
+     */
     public IncludeCheckerFactory(IncludeSettings settings) {
         // 检查参数
         Objects.requireNonNull(settings, "[settings] is null");
@@ -146,11 +157,13 @@ public class IncludeCheckerFactory {
                     includes = this.accessor.getError() != null;
                     break;
                 case ON_ATTRIBUTE:
-                    Object value = this.businessContext.getAttribute(key);
-                    if (value instanceof Boolean) {
-                        includes = (Boolean) value;
-                    } else {
-                        includes = value != null;
+                    if (this.businessContext != null) {
+                        Object value = this.businessContext.getAttribute(key);
+                        if (value instanceof Boolean) {
+                            includes = (Boolean) value;
+                        } else {
+                            includes = value != null;
+                        }
                     }
                     break;
                 default:

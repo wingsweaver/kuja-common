@@ -6,4 +6,8 @@ package com.wingsweaver.kuja.common.utils.support.idgen;
  * @author wingsweaver
  */
 public interface StringIdGenerator extends IdGenerator<String> {
+    /**
+     * 默认的字符串型 ID 生成器。
+     */
+    StringIdGenerator FALLBACK = UuidStringIdGenerator.DEFAULT;
 }

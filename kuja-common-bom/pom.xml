@@ -60,23 +60,11 @@
                 <version>${kuja-common.version}</version>
                 <scope>compile</scope>
             </dependency>
-            <dependency>
-                <groupId>com.wingsweaver.kuja</groupId>
-                <artifactId>kuja-common-cloud</artifactId>
-                <version>${kuja-common.version}</version>
-                <scope>compile</scope>
-            </dependency>
 
             <!-- Starter 项目 -->
             <dependency>
                 <groupId>com.wingsweaver.kuja</groupId>
                 <artifactId>kuja-starter-common-boot</artifactId>
-                <version>${kuja-common.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.wingsweaver.kuja</groupId>
-                <artifactId>kuja-starter-common-cloud</artifactId>
                 <version>${kuja-common.version}</version>
                 <scope>compile</scope>
             </dependency>
@@ -125,6 +113,12 @@
                     <dependency>
                         <groupId>com.wingsweaver.kuja</groupId>
                         <artifactId>kuja-common-messaging-jakarta</artifactId>
+                        <version>${kuja-common.version}</version>
+                        <scope>compile</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.wingsweaver.kuja</groupId>
+                        <artifactId>kuja-starter-common-messaging-jakarta</artifactId>
                         <version>${kuja-common.version}</version>
                         <scope>compile</scope>
                     </dependency>

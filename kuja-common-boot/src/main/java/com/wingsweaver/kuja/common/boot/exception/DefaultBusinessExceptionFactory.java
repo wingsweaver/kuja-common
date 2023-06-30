@@ -3,10 +3,9 @@ package com.wingsweaver.kuja.common.boot.exception;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinition;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinitionAttributes;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinitionRepository;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class DefaultBusinessExceptionFactory implements BusinessExceptionFactory, InitializingBean {
+public class DefaultBusinessExceptionFactory extends AbstractComponent implements BusinessExceptionFactory {
     /**
      * 错误定义仓库。
      */
@@ -102,14 +101,54 @@ public class DefaultBusinessExceptionFactory implements BusinessExceptionFactory
         return this.create(cause, errorDefinition, args);
     }
 
+    /**
+     * 根据错误定义编码解析错误定义。
+     *
+     * @param errorDefinitionCode 错误定义编码
+     * @return 错误定义
+     */
     protected ErrorDefinition resolveErrorDefinition(String errorDefinitionCode) {
         return this.errorDefinitionRepository.getErrorDefinition(errorDefinitionCode);
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("errorDefinitionRepository", this.getErrorDefinitionRepository());
-        AssertState.Named.notNull("errorDefinitionAttributes", this.getErrorDefinitionAttributes());
-        AssertState.Named.notNull("exceptionCustomizers", this.getExceptionCustomizers());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 errorDefinitionRepository
+        this.initializeErrorDefinitionRepository();
+
+        // 初始化 errorDefinitionAttributes
+        this.initializeErrorDefinitionAttributes();
+
+        // 初始化 exceptionCustomizers
+        this.initializeExceptionCustomizers();
+    }
+
+    /**
+     * 初始化 errorDefinitionRepository。
+     */
+    protected void initializeErrorDefinitionRepository() {
+        if (this.errorDefinitionRepository == null) {
+            this.errorDefinitionRepository = this.getBean(ErrorDefinitionRepository.class);
+        }
+    }
+
+    /**
+     * 初始化 errorDefinitionAttributes。
+     */
+    protected void initializeErrorDefinitionAttributes() {
+        if (this.errorDefinitionAttributes == null) {
+            this.errorDefinitionAttributes = this.getBean(ErrorDefinitionAttributes.class);
+        }
+    }
+
+    /**
+     * 初始化 exceptionCustomizers。
+     */
+    protected void initializeExceptionCustomizers() {
+        if (this.exceptionCustomizers == null) {
+            this.exceptionCustomizers = this.getBeansOrdered(BusinessExceptionCustomizer.class);
+        }
     }
 }

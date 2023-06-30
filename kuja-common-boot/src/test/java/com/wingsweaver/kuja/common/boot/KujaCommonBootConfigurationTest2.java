@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.context.MapBusinessContext;
 import com.wingsweaver.kuja.common.boot.errordefinition.DefaultErrorDefinition;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinition;
 import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinitionProperties;
@@ -98,7 +99,7 @@ class KujaCommonBootConfigurationTest2 {
     @Test
     void testErrorHandlingDelegate() {
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             Exception error = new Exception("some-error");
             ErrorHandlerContext errorHandlerContext = this.errorHandlingDelegate.handleError(businessContext, error);
             assertNotNull(errorHandlerContext);
@@ -106,7 +107,7 @@ class KujaCommonBootConfigurationTest2 {
         }
 
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             String message = "custom-error: " + UUID.randomUUID();
             CustomError error = new CustomError(message);
             ErrorHandlerContextCustomizer preProcessor = context -> {
@@ -132,12 +133,12 @@ class KujaCommonBootConfigurationTest2 {
     @Test
     void testCustomErrorHandlingComponent() throws Throwable {
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             Exception error = new Exception("some-error");
             assertThrows(Exception.class, () -> this.customErrorHandlingComponent.handleError(businessContext, error));
         }
         {
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             String message = "custom-error: " + UUID.randomUUID();
             CustomError error = new CustomError(message);
             Object result = this.customErrorHandlingComponent.handleError(businessContext, error);
@@ -156,7 +157,7 @@ class KujaCommonBootConfigurationTest2 {
         {
             // 无法处理的异常类型
             // 使用默认的失败返回结果兜底
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             Exception error = new Exception("some-error");
             ReturnValue returnValue = (ReturnValue) this.customReturnValueErrorHandlingComponent.handleError(businessContext, error);
             assertEquals("24680", returnValue.getCode());
@@ -170,7 +171,7 @@ class KujaCommonBootConfigurationTest2 {
         {
             // 可以处理的内置异常类型
             // 根据异常内容提取返回值
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             BusinessException error = this.businessExceptionFactory.create("error.code.401");
             ReturnValue returnValue = (ReturnValue) this.customReturnValueErrorHandlingComponent.handleError(businessContext, error);
             assertEquals("error.code.401", returnValue.getCode());
@@ -181,7 +182,7 @@ class KujaCommonBootConfigurationTest2 {
         {
             // 可以处理的自定义异常类型
             // 使用自定义的处理结果
-            BusinessContext businessContext = BusinessContext.create();
+            BusinessContext businessContext = new MapBusinessContext();
             String message = "custom-error: " + UUID.randomUUID();
             CustomError error = new CustomError(message);
             assertEquals(message, this.customReturnValueErrorHandlingComponent.handleError(businessContext, error));

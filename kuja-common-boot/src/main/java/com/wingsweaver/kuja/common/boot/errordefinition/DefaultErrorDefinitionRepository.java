@@ -1,10 +1,9 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import java.util.Map;
  *
  * @author wingsweaver
  */
-public class DefaultErrorDefinitionRepository implements ErrorDefinitionRepository, InitializingBean {
+public class DefaultErrorDefinitionRepository extends AbstractComponent implements ErrorDefinitionRepository {
     /**
      * 错误定义注册器的集合。
      */
@@ -36,12 +35,29 @@ public class DefaultErrorDefinitionRepository implements ErrorDefinitionReposito
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("errorDefinitionRegisters", this.getErrorDefinitionRegisters());
-        this.initialize();
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 errorDefinitionRegisters
+        this.initErrorDefinitionRegisters();
+
+        // 初始化 errorDefinitionMap
+        this.initErrorDefinitionMap();
     }
 
-    protected void initialize() {
+    /**
+     * 初始化 errorDefinitionRegisters。
+     */
+    protected void initErrorDefinitionRegisters() {
+        if (this.errorDefinitionRegisters == null) {
+            this.errorDefinitionRegisters = this.getBeansOrdered(ErrorDefinitionRegister.class);
+        }
+    }
+
+    /**
+     * 初始化 errorDefinitionMap。
+     */
+    protected void initErrorDefinitionMap() {
         // 获取原始的错误定义的集合
         List<ErrorDefinition> errorDefinitions = new LinkedList<>();
         for (ErrorDefinitionRegister errorDefinitionRegister : this.errorDefinitionRegisters) {

@@ -1,7 +1,8 @@
 package com.wingsweaver.kuja.common.messaging.autoconfigurer.jms;
 
-import com.wingsweaver.kuja.common.messaging.autoconfigurer.constants.KujaCommonMessagingKeys;
-import com.wingsweaver.kuja.common.messaging.autoconfigurer.messaging.AbstractMessagingTemplateSendServiceConfiguration;
+import com.wingsweaver.kuja.common.messaging.autoconfigurer.core.constants.KujaCommonMessagingKeys;
+import com.wingsweaver.kuja.common.messaging.autoconfigurer.core.jms.JmsSendServiceProperties;
+import com.wingsweaver.kuja.common.messaging.autoconfigurer.core.messaging.AbstractMessagingTemplateSendServiceConfiguration;
 import com.wingsweaver.kuja.common.messaging.core.send.jms.JmsJakartaMessagingTemplateSendService;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

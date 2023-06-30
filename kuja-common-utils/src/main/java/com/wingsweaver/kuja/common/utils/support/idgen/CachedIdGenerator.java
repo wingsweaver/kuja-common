@@ -1,7 +1,9 @@
 package com.wingsweaver.kuja.common.utils.support.idgen;
 
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.ThreadUtil;
 import lombok.Getter;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.backoff.BackOff;
 import org.springframework.util.backoff.BackOffExecution;
 
@@ -15,7 +17,7 @@ import java.util.Objects;
  * @author wingsweaver
  */
 @Getter
-public class CachedIdGenerator<T> implements IdGenerator<T> {
+public class CachedIdGenerator<T> extends AbstractComponent implements IdGenerator<T> {
     /**
      * 实际的 ID 生成器的实例。
      */
@@ -112,5 +114,24 @@ public class CachedIdGenerator<T> implements IdGenerator<T> {
 
         // 返回
         return true;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 idGenerator
+        this.initIdGenerator();
+    }
+
+    /**
+     * 初始化 idGenerator。
+     *
+     * @throws Exception 初始化失败时抛出
+     */
+    protected void initIdGenerator() throws Exception {
+        if (this.idGenerator instanceof InitializingBean) {
+            ((InitializingBean) this.idGenerator).afterPropertiesSet();
+        }
     }
 }

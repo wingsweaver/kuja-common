@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.utils.exception;
 
 import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
+import com.wingsweaver.kuja.common.utils.support.lang.ClassUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 
 import java.io.PrintStream;
@@ -16,22 +17,32 @@ import java.util.function.BiConsumer;
  *
  * @author wingsweaver
  */
+@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 public class ExtendedException extends Exception implements Extended<ExtendedException> {
     private Map<String, Object> extendedMap;
 
     public ExtendedException() {
+        this.init();
     }
 
     public ExtendedException(String message) {
         super(message);
+        this.init();
     }
 
     public ExtendedException(String message, Throwable cause) {
         super(message, cause);
+        this.init();
     }
 
     public ExtendedException(Throwable cause) {
         super(cause);
+        this.init();
+    }
+
+    private void init() {
+        // 设置抛出异常的线程
+        this.setThread(Thread.currentThread());
     }
 
     public static final String KEY_MESSAGE = "message";
@@ -135,5 +146,20 @@ public class ExtendedException extends Exception implements Extended<ExtendedExc
     public void printStackTrace(PrintWriter s) {
         super.printStackTrace(s);
         ExtendedUtil.printStackTrace(this, s);
+    }
+
+    public static final String KEY_THREAD = ClassUtil.resolveKey(Thread.class);
+
+    public Thread getThread() {
+        return this.getExtendedAttribute(KEY_THREAD);
+    }
+
+    public void setThread(Thread thread) {
+        this.setExtendedAttribute(KEY_THREAD, thread);
+    }
+
+    public String getThreadName() {
+        Thread thread = this.getThread();
+        return (thread != null) ? thread.getName() : null;
     }
 }

@@ -1,5 +1,6 @@
 package com.wingsweaver.kuja.common.utils.model.attributes;
 
+import com.wingsweaver.kuja.common.utils.support.tostring.DontReflect;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import java.util.function.Function;
  */
 @Getter
 @Setter
+@DontReflect
 public class AttributesAccessor<K> {
     private final Attributes<K> attributes;
 

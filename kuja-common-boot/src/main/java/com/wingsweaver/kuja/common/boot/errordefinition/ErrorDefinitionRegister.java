@@ -1,5 +1,7 @@
 package com.wingsweaver.kuja.common.boot.errordefinition;
 
+import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
+
 import java.util.Collection;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Collection;
  *
  * @author wingsweaver
  */
-public interface ErrorDefinitionRegister {
+public interface ErrorDefinitionRegister extends DefaultOrdered {
     /**
      * 注册错误定义到指定的集合中。
      *

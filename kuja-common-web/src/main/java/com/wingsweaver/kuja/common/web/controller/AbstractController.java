@@ -1,18 +1,16 @@
 package com.wingsweaver.kuja.common.web.controller;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
+import com.wingsweaver.kuja.common.boot.errorhandling.AbstractErrorHandlingComponent;
 import com.wingsweaver.kuja.common.boot.errorhandling.ErrorHandlingDelegate;
 import com.wingsweaver.kuja.common.boot.model.AbstractBusinessComponent;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
 import com.wingsweaver.kuja.common.utils.logging.slf4j.LogUtil;
 import com.wingsweaver.kuja.common.web.context.WebContextAccessor;
 import com.wingsweaver.kuja.common.web.errorhandling.AbstractResponseEntityReturnValueErrorHandlingComponent;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
@@ -27,15 +25,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public abstract class AbstractController extends AbstractBusinessComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractController.class);
 
-    @Autowired
+    /**
+     * ErrorHandlingDelegate 实例。
+     */
     private ErrorHandlingDelegate errorHandlingDelegate;
 
     /**
-     * 异常处理组件。
+     * 内部使用的异常处理组件。
      */
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private InnerErrorHandlingComponent errorHandlingComponent;
+    private AbstractErrorHandlingComponent errorHandlingComponent;
 
     /**
      * 处理异常。<br>
@@ -57,12 +55,32 @@ public abstract class AbstractController extends AbstractBusinessComponent {
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
-        AssertState.Named.notNull("errorHandlingDelegate", this.getErrorHandlingDelegate());
-
         // 初始化 errorHandlingComponent
-        this.errorHandlingComponent = new InnerErrorHandlingComponent();
-        this.errorHandlingComponent.setReturnValueFactory(this.getReturnValueFactory());
-        this.errorHandlingComponent.setErrorHandlingDelegate(this.getErrorHandlingDelegate());
+        this.initErrorHandlingDelegate();
+
+        // 初始化 innerErrorHandlingComponent
+        this.initErrorHandlingComponent();
+    }
+
+    /**
+     * 初始化 innerErrorHandlingComponent。
+     */
+    private void initErrorHandlingComponent() {
+        if (this.errorHandlingComponent == null) {
+            InnerErrorHandlingComponent errorHandlingComponent = new InnerErrorHandlingComponent();
+            errorHandlingComponent.setReturnValueFactory(this.getReturnValueFactory());
+            errorHandlingComponent.setErrorHandlingDelegate(this.getErrorHandlingDelegate());
+            this.errorHandlingComponent = errorHandlingComponent;
+        }
+    }
+
+    /**
+     * 初始化 errorHandlingDelegate。
+     */
+    protected void initErrorHandlingDelegate() {
+        if (this.errorHandlingDelegate == null) {
+            this.errorHandlingDelegate = this.getBean(ErrorHandlingDelegate.class);
+        }
     }
 
     /**

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 返回 {@link com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue} 的 {@link AbstractErrorHandlingComponent} 的实现类。
@@ -20,9 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractReturnValueErrorHandlingComponent extends AbstractErrorHandlingComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReturnValueErrorHandlingComponent.class);
 
+    /**
+     * 是否已经处理过的 Key。
+     */
     protected static final String KEY_FALLBACK_HANDLED = ClassUtil.resolveKey(AbstractReturnValueErrorHandlingComponent.class, "fallbackHandled");
 
-    @Autowired
+    /**
+     * ReturnValueFactory 实例。
+     */
     private ReturnValueFactory returnValueFactory;
 
     @Override
@@ -50,5 +54,22 @@ public abstract class AbstractReturnValueErrorHandlingComponent extends Abstract
 
         // 返回结果
         return returnValue;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 returnValueFactory
+        this.initReturnValueFactory();
+    }
+
+    /**
+     * 初始化 returnValueFactory。
+     */
+    protected void initReturnValueFactory() {
+        if (this.returnValueFactory == null) {
+            this.returnValueFactory = this.getBean(ReturnValueFactory.class);
+        }
     }
 }

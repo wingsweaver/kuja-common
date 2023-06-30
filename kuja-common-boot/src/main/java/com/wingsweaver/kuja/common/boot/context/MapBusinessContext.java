@@ -1,9 +1,10 @@
 package com.wingsweaver.kuja.common.boot.context;
 
-import com.wingsweaver.kuja.common.utils.constants.BufferSizes;
 import com.wingsweaver.kuja.common.utils.model.attributes.MapMutableAttributes;
+import com.wingsweaver.kuja.common.utils.model.context.MapContext;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,16 +12,45 @@ import java.util.Map;
  *
  * @author wingsweaver
  */
-public class MapBusinessContext extends MapMutableAttributes<String> implements BusinessContext {
+@Getter
+@Setter
+public class MapBusinessContext extends MapContext implements BusinessContext, BusinessContextTypeSetter {
+    /**
+     * 上下文类型。
+     */
+    private BusinessContextType contextType;
+
+    /**
+     * 构造函数。
+     *
+     * @param map Map 对象
+     */
     public MapBusinessContext(Map<String, ?> map) {
         super(map);
     }
 
+    /**
+     * 构造函数。
+     *
+     * @param initCapacity 初始容量
+     */
     public MapBusinessContext(int initCapacity) {
-        this(new HashMap<>(initCapacity));
+        super(initCapacity);
     }
 
+    /**
+     * 构造函数。
+     */
     public MapBusinessContext() {
-        this(BufferSizes.SMALL);
+        // 什么也不做
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param context BusinessContext 实例
+     */
+    public MapBusinessContext(BusinessContext context) {
+        super(context);
     }
 }

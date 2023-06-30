@@ -1,7 +1,9 @@
 package com.wingsweaver.kuja.common.boot;
 
 import com.wingsweaver.kuja.common.boot.constants.KujaCommonBootKeys;
-import lombok.Data;
+import com.wingsweaver.kuja.common.utils.model.AbstractPojo;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -11,9 +13,10 @@ import java.util.Map;
  *
  * @author wingsweaver
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = KujaCommonBootKeys.PREFIX_KUJA_COMMON_BOOT)
-public class CommonBootProperties {
+public class CommonBootProperties extends AbstractPojo {
     /**
      * appinfo 相关设置。
      */

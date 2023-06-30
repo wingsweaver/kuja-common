@@ -4,13 +4,11 @@ import com.wingsweaver.kuja.common.boot.errordefinition.ErrorDefinition;
 import com.wingsweaver.kuja.common.boot.exception.BusinessException;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValue;
 import com.wingsweaver.kuja.common.boot.returnvalue.ReturnValueFactory;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
-import com.wingsweaver.kuja.common.utils.support.DefaultOrdered;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.utils.support.lang.StringUtil;
 import com.wingsweaver.kuja.common.utils.support.util.MapUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 
@@ -21,9 +19,15 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PreDefinedBusinessExceptionHandler implements ErrorHandler, InitializingBean, DefaultOrdered {
+public class PreDefinedBusinessExceptionHandler extends AbstractComponent implements ErrorHandler {
+    /**
+     * ReturnValueFactory 实例。
+     */
     private ReturnValueFactory returnValueFactory;
 
+    /**
+     * ErrorDefinition2ReturnValuePatcher 实例的列表。
+     */
     private List<ErrorDefinition2ReturnValuePatcher> patchers;
 
     @Override
@@ -53,8 +57,31 @@ public class PreDefinedBusinessExceptionHandler implements ErrorHandler, Initial
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("returnValueFactory", this.getReturnValueFactory());
-        AssertState.Named.notNull("patchers", this.getPatchers());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 returnValueFactory
+        this.initReturnValueFactory();
+
+        // 初始化 patchers
+        this.initPatchers();
+    }
+
+    /**
+     * 初始化 returnValueFactory。
+     */
+    protected void initReturnValueFactory() {
+        if (this.returnValueFactory == null) {
+            this.returnValueFactory = this.getBean(ReturnValueFactory.class);
+        }
+    }
+
+    /**
+     * 初始化 patchers。
+     */
+    protected void initPatchers() {
+        if (this.patchers == null) {
+            this.patchers = this.getBeansOrdered(ErrorDefinition2ReturnValuePatcher.class);
+        }
     }
 }

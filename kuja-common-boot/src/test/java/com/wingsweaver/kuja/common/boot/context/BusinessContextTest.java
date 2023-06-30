@@ -13,7 +13,7 @@ class BusinessContextTest {
 
     @Test
     void create() {
-        BusinessContext businessContext = BusinessContext.create();
+        BusinessContext businessContext = new MapBusinessContext();
         assertNotNull(businessContext);
         assertTrue(businessContext.asMap().isEmpty());
     }
@@ -21,7 +21,7 @@ class BusinessContextTest {
     @Test
     void of() {
         Map<String, Object> map = MapUtil.from("id", 10, "name", "tom");
-        BusinessContext businessContext = BusinessContext.of(map);
+        BusinessContext businessContext = new MapBusinessContext(map);
         assertNotNull(businessContext);
         assertEquals(2, businessContext.asMap().size());
         assertEquals(10, (int) businessContext.getAttribute("id"));
@@ -31,9 +31,9 @@ class BusinessContextTest {
     @Test
     void testClone() {
         Map<String, Object> map = MapUtil.from("id", 10, "name", "tom");
-        BusinessContext source = BusinessContext.of(map);
+        BusinessContext source = new MapBusinessContext(map);
 
-        BusinessContext businessContext = BusinessContext.clone(source);
+        BusinessContext businessContext = new MapBusinessContext(source.asMap());
         assertNotNull(businessContext);
         assertEquals(2, businessContext.asMap().size());
         assertEquals(10, (int) businessContext.getAttribute("id"));
@@ -46,7 +46,7 @@ class BusinessContextTest {
 
     @Test
     void testClone2() {
-        BusinessContext businessContext = BusinessContext.clone(null);
+        BusinessContext businessContext = new MapBusinessContext();
         assertNotNull(businessContext);
         assertTrue(businessContext.asMap().isEmpty());
     }
@@ -54,9 +54,9 @@ class BusinessContextTest {
     @Test
     void layered() {
         Map<String, Object> map = MapUtil.from("id", 10, "name", "tom");
-        BusinessContext source = BusinessContext.of(map);
+        BusinessContext source = new MapBusinessContext(map);
 
-        BusinessContext businessContext = BusinessContext.layered(source);
+        BusinessContext businessContext = new LayeredBusinessContext(source);
         assertNotNull(businessContext);
         assertEquals(2, businessContext.asMap().size());
         assertEquals(10, (int) businessContext.getAttribute("id"));

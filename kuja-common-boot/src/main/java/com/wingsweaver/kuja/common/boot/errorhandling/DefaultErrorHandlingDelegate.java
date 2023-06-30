@@ -2,10 +2,9 @@ package com.wingsweaver.kuja.common.boot.errorhandling;
 
 import com.wingsweaver.kuja.common.boot.context.BusinessContext;
 import com.wingsweaver.kuja.common.boot.context.BusinessContextAccessor;
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class DefaultErrorHandlingDelegate implements ErrorHandlingDelegate, InitializingBean {
+public class DefaultErrorHandlingDelegate extends AbstractComponent implements ErrorHandlingDelegate {
     /**
      * 错误处理器上下文的定制器列表。
      */
@@ -32,7 +31,7 @@ public class DefaultErrorHandlingDelegate implements ErrorHandlingDelegate, Init
                                            ErrorHandlerContextCustomizer preProcessor,
                                            ErrorHandlerContextCustomizer postProcessor) {
         // 创建异常处理上下文
-        ErrorHandlerContext context = this.buildContext(businessContext, error, preProcessor);
+        ErrorHandlerContext context = this.createErrorHandlerContext(businessContext, error, preProcessor);
 
         // 执行异常处理
         this.handleError(context);
@@ -67,8 +66,9 @@ public class DefaultErrorHandlingDelegate implements ErrorHandlingDelegate, Init
      * @param preProcessor    预处理的定制器
      * @return 错误处理上下文
      */
-    protected ErrorHandlerContext buildContext(BusinessContext businessContext, Throwable error,
-                                               ErrorHandlerContextCustomizer preProcessor) {
+    @Override
+    public ErrorHandlerContext createErrorHandlerContext(BusinessContext businessContext, Throwable error,
+                                                         ErrorHandlerContextCustomizer preProcessor) {
         // 创建错误处理上下文
         ErrorHandlerContext context = this.createContext(businessContext, error);
 
@@ -102,6 +102,9 @@ public class DefaultErrorHandlingDelegate implements ErrorHandlingDelegate, Init
         context.setInputError(error);
         context.setOutputError(error);
 
+        ErrorHandlerContextAccessor errorHandlerContextAccessor = new ErrorHandlerContextAccessor(context);
+        errorHandlerContextAccessor.setThread(Thread.currentThread());
+
         // 返回
         return context;
     }
@@ -116,8 +119,31 @@ public class DefaultErrorHandlingDelegate implements ErrorHandlingDelegate, Init
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("contextCustomizers", this.getContextCustomizers());
-        AssertState.Named.notNull("errorHandlers", this.getErrorHandlers());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 contextCustomizers
+        this.initContextCustomizers();
+
+        // 初始化 errorHandlers
+        this.initErrorHandlers();
+    }
+
+    /**
+     * 初始化 contextCustomizers。
+     */
+    protected void initContextCustomizers() {
+        if (this.contextCustomizers == null) {
+            this.contextCustomizers = this.getBeansOrdered(ErrorHandlerContextCustomizer.class);
+        }
+    }
+
+    /**
+     * 初始化 errorHandlers。
+     */
+    protected void initErrorHandlers() {
+        if (this.errorHandlers == null) {
+            this.errorHandlers = this.getBeansOrdered(ErrorHandler.class);
+        }
     }
 }

@@ -137,6 +137,7 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- 注意：jakarta/spring boot v3 相关项目，在 JDK 17 即以上才会被包含进来 -->
     <modules>
         <module>kuja-common-bom</module>
 
@@ -146,18 +147,13 @@
         <module>kuja-common-web</module>
         <module>kuja-common-webmvc-common</module>
         <module>kuja-common-webmvc-jee</module>
-        <module>kuja-common-webmvc-jakarta</module>
         <module>kuja-common-webflux</module>
         <module>kuja-common-messaging</module>
-        <module>kuja-common-cloud</module>
 
         <!-- Starter 项目 -->
         <module>kuja-starter-common-boot</module>
-        <module>kuja-starter-common-cloud</module>
         <module>kuja-starter-common-messaging</module>
-        <module>kuja-common-messaging-jakarta</module>
         <module>kuja-starter-common-webflux</module>
-        <module>kuja-starter-common-webmvc-jakarta</module>
         <module>kuja-starter-common-webmvc-jee</module>
     </modules>
 
@@ -183,6 +179,20 @@
     </distributionManagement>
 
     <profiles>
+        <!-- JDK17 及以上，添加 jakarta/spring boot v3 相关模块 -->
+        <profile>
+            <id>jdk17+</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <modules>
+                <module>kuja-common-webmvc-jakarta</module>
+                <module>kuja-common-messaging-jakarta</module>
+                <module>kuja-starter-common-messaging-jakarta</module>
+                <module>kuja-starter-common-webmvc-jakarta</module>
+            </modules>
+        </profile>
+
         <profile>
             <id>verify</id>
             <modules>

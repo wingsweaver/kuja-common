@@ -10,9 +10,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @author wingsweaver
  */
 public class DefaultPresetEnvironmentProcessor extends AbstractEnvironmentProcessor implements PresetEnvironmentProcessor {
-
+    /**
+     * kuja.boot.env.preset 属性的键。
+     */
     public static final String KEY_KUJA_BOOT_ENV_PRESET = "kuja.boot.env.preset";
 
+    /**
+     * kuja.boot.env.preset 属性的值。
+     */
     public static final String VALUE_KUJA_BOOT_ENV_PRESET = "classpath:/kuja-env-preset.properties";
 
     @Override

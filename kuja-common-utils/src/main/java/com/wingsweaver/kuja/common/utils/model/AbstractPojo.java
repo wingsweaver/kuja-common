@@ -26,9 +26,11 @@ public abstract class AbstractPojo implements Serializable {
      * toString 转换设置的定制处理。<br>
      * 默认关闭输出类型名称。
      *
-     * @param configBuilder 转换设置的定制处理
+     * @param config 转换设置
      */
-    protected void customizeToStringConfig(ToStringConfig.Builder configBuilder) {
-        configBuilder.setIncludeTypeName(false);
+    protected void customizeToStringConfig(ToStringConfig config) {
+        config.setObjectToString(this);
+        config.setIncludeTypeName(false);
+        config.setMaxReflectDepth(1);
     }
 }

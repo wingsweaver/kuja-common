@@ -127,7 +127,7 @@ class GlobalErrorControllerTest {
     }
 
     @Test
-    void afterPropertiesSet() {
+    void afterPropertiesSet() throws Exception {
         GlobalErrorController controller = new GlobalErrorController();
 
         assertNull(controller.getErrorAttributes());

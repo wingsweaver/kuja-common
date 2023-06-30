@@ -1,6 +1,7 @@
 package com.wingsweaver.kuja.common.boot.env;
 
 import com.wingsweaver.kuja.common.utils.exception.ExtendedRuntimeException;
+import com.wingsweaver.kuja.common.utils.model.tags.convert.TagConversionService;
 import com.wingsweaver.kuja.common.utils.model.tuple.Tuple2;
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
@@ -27,6 +28,40 @@ import java.util.List;
 public final class PropertySourceLoadUtil {
     private PropertySourceLoadUtil() {
         // 禁止实例化
+    }
+
+    /**
+     * 用于指定 PropertySource 的顺序的属性名。
+     */
+    public static final String KEY_PROPERTY_ORDER = "!kuja.properties.order";
+
+    /**
+     * 比较两个 PropertySource 的顺序。
+     *
+     * @param p1 PropertySource 1
+     * @param p2 PropertySource 2
+     * @return 比较结果
+     */
+    public static int comparePropertySource(PropertySource<?> p1, PropertySource<?> p2) {
+        return Integer.compare(resolvePropertySourceOrder(p1), resolvePropertySourceOrder(p2));
+    }
+
+    /**
+     * 获取指定 PropertySource 的顺序。
+     *
+     * @param propertySource PropertySource
+     * @return 顺序
+     */
+    public static int resolvePropertySourceOrder(PropertySource<?> propertySource) {
+        if (propertySource == null) {
+            return 0;
+        }
+
+        Object value = propertySource.getProperty(KEY_PROPERTY_ORDER);
+        if (value == null) {
+            return 0;
+        }
+        return TagConversionService.toValue(value, Long.class);
     }
 
     /**
@@ -61,6 +96,7 @@ public final class PropertySourceLoadUtil {
         if (propertySources.isEmpty()) {
             return Collections.emptyList();
         } else {
+            propertySources.sort(PropertySourceLoadUtil::comparePropertySource);
             return new ArrayList<>(propertySources);
         }
     }

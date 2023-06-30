@@ -1,12 +1,11 @@
 package com.wingsweaver.kuja.common.webmvc.jee.config;
 
-import com.wingsweaver.kuja.common.utils.diag.AssertState;
+import com.wingsweaver.kuja.common.utils.model.AbstractComponent;
 import com.wingsweaver.kuja.common.web.common.WebServerProperties;
 import com.wingsweaver.kuja.common.webmvc.common.support.BusinessContextHandlerMethodArgumentResolver;
 import com.wingsweaver.kuja.common.webmvc.jee.interceptor.BusinessContextHandlerInterceptor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,7 +21,10 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class KujaWebMvcConfigurer implements WebMvcConfigurer, InitializingBean {
+public class KujaWebMvcConfigurer extends AbstractComponent implements WebMvcConfigurer {
+    /**
+     * WebServerProperties 实例。
+     */
     private WebServerProperties properties;
 
     @Override
@@ -48,7 +50,19 @@ public class KujaWebMvcConfigurer implements WebMvcConfigurer, InitializingBean 
     }
 
     @Override
-    public void afterPropertiesSet() {
-        AssertState.Named.notNull("properties", this.getProperties());
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        // 初始化 properties
+        this.initProperties();
+    }
+
+    /**
+     * 初始化 properties。
+     */
+    protected void initProperties() {
+        if (this.properties == null) {
+            this.properties = this.getBean(WebServerProperties.class);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.wingsweaver.kuja.common.utils.support.tostring;
 
-import com.wingsweaver.kuja.common.utils.model.attributes.AbstractAttributesBuilder;
 import com.wingsweaver.kuja.common.utils.model.attributes.Attributes;
+import com.wingsweaver.kuja.common.utils.model.attributes.MapMutableAttributes;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Map;
@@ -11,169 +11,315 @@ import java.util.Map;
  *
  * @author wingsweaver
  */
-public interface ToStringConfig extends Attributes<Object> {
-    String KEY_PUBLIC_ONLY = "default-only";
-
-    /**
-     * 检查是否只输出公共属性。
-     *
-     * @return 是否只输出公共属性
-     */
-    default boolean isPublicOnly() {
-        return getAttribute(KEY_PUBLIC_ONLY, false);
+public class ToStringConfig extends MapMutableAttributes<String> {
+    public ToStringConfig(Map<String, ?> map) {
+        super(map);
     }
 
-    String KEY_INCLUDE_TYPE_NAME = "include-type-name";
-
-    /**
-     * 检查是否输出类型名称。
-     *
-     * @return 是否输出类型名称
-     */
-    default boolean isIncludeTypeName() {
-        return getAttribute(KEY_INCLUDE_TYPE_NAME, false);
+    public ToStringConfig(Attributes<String> attributes) {
+        super(attributes);
     }
 
-    String KEY_INCLUDE_TRANSIENT = "include-transieent";
+    /**
+     * Key: 是否只导出 public 属性和方法。
+     */
+    public static final String KEY_PUBLIC_ONLY = "public-only";
 
     /**
-     * 检查是否输出 transient 属性。
-     *
-     * @return 是否输出 transient 属性
+     * {@link #isPublicOnly()} 的默认值。
      */
-    default boolean isIncludeTransient() {
-        return getAttribute(KEY_INCLUDE_TRANSIENT, false);
+    public static final boolean DEFAULT_PUBLIC_ONLY = true;
+
+    /**
+     * 检查是否只输出 public 属性和方法。
+     *
+     * @return 是否只输出 public 属性和方法。
+     */
+    public boolean isPublicOnly() {
+        return getAttribute(KEY_PUBLIC_ONLY, DEFAULT_PUBLIC_ONLY);
     }
 
-    String KEY_REFLECT_FIELDS = "reflect-fields";
-
     /**
-     * 检查是否输出字段。
+     * 设置是否只输出 public 属性和方法。
      *
-     * @return 是否输出字段
+     * @param publicOnly 是否只输出 public 属性和方法
      */
-    default boolean isReflectFields() {
-        return getAttribute(KEY_REFLECT_FIELDS, true);
+    public void setPublicOnly(Boolean publicOnly) {
+        this.setAttribute(KEY_PUBLIC_ONLY, publicOnly);
     }
 
-    String KEY_REFLECT_METHODS = "reflect-methods";
+    /**
+     * Key: 是否包含类型名称。
+     */
+    public static final String KEY_INCLUDE_TYPE_NAME = "include-type-name";
 
     /**
-     * 检查是否输出方法。
-     *
-     * @return 是否输出方法
+     * {@link #isIncludeTypeName()} 的默认值。
      */
-    default boolean isReflectMethods() {
-        return getAttribute(KEY_REFLECT_METHODS, true);
+    public static final boolean DEFAULT_INCLUDE_TYPE_NAME = false;
+
+    /**
+     * 检查是否包含类型名称。
+     *
+     * @return 是否包含类型名称
+     */
+    public boolean isIncludeTypeName() {
+        return getAttribute(KEY_INCLUDE_TYPE_NAME, DEFAULT_INCLUDE_TYPE_NAME);
     }
 
-    String KEY_DATETIME_FORMAT = "datetime-format";
-
-    String DEFAULT_DATETIME_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern();
+    /**
+     * 设置是否包含类型名称。
+     *
+     * @param includeTypeName 是否包含类型名称
+     */
+    public void setIncludeTypeName(Boolean includeTypeName) {
+        this.setAttribute(KEY_INCLUDE_TYPE_NAME, includeTypeName);
+    }
 
     /**
-     * 获取日期时间格式。
-     *
-     * @return 日期时间格式
+     * Key: 是否包含 transient 属性。
      */
-    default String getDateTimeFormat() {
+    public static final String KEY_INCLUDE_TRANSIENT = "include-transient";
+
+    /**
+     * {@link #isIncludeTransient()} 的默认值。
+     */
+    public static final boolean DEFAULT_INCLUDE_TRANSIENT = false;
+
+    /**
+     * 检查是否包含 transient 属性。
+     *
+     * @return 是否包含 transient 属性
+     */
+    public boolean isIncludeTransient() {
+        return getAttribute(KEY_INCLUDE_TRANSIENT, DEFAULT_INCLUDE_TRANSIENT);
+    }
+
+    /**
+     * 设置是否包含 transient 属性。
+     *
+     * @param includeTransient 是否包含 transient 属性
+     */
+    public void setIncludeTransient(Boolean includeTransient) {
+        this.setAttribute(KEY_INCLUDE_TRANSIENT, includeTransient);
+    }
+
+    /**
+     * Key: 是否使用反射的方式获取属性。
+     */
+    public static final String KEY_REFLECT_FIELDS = "reflect-fields";
+
+    /**
+     * {@link #isReflectFields()} 的默认值。
+     */
+    public static final boolean DEFAULT_REFLECT_FIELDS = true;
+
+    /**
+     * 检查是否使用反射的方式获取属性。
+     *
+     * @return 是否使用反射的方式获取属性
+     */
+    public boolean isReflectFields() {
+        return getAttribute(KEY_REFLECT_FIELDS, DEFAULT_REFLECT_FIELDS);
+    }
+
+    /**
+     * 设置是否使用反射的方式获取属性。
+     *
+     * @param reflectFields 是否使用反射的方式获取属性
+     */
+    public void setReflectFields(Boolean reflectFields) {
+        this.setAttribute(KEY_REFLECT_FIELDS, reflectFields);
+    }
+
+    /**
+     * Key: 是否使用反射的方式获取方法。
+     */
+    public static final String KEY_REFLECT_METHODS = "reflect-methods";
+
+    /**
+     * {@link #isReflectMethods()} 的默认值。
+     */
+    public static final boolean DEFAULT_REFLECT_METHODS = true;
+
+    /**
+     * 检查是否使用反射的方式获取方法。
+     *
+     * @return 是否使用反射的方式获取方法
+     */
+    public boolean isReflectMethods() {
+        return getAttribute(KEY_REFLECT_METHODS, DEFAULT_REFLECT_METHODS);
+    }
+
+    /**
+     * 设置是否使用反射的方式获取方法。
+     *
+     * @param reflectMethods 是否使用反射的方式获取方法
+     */
+    public void setReflectMethods(Boolean reflectMethods) {
+        this.setAttribute(KEY_REFLECT_METHODS, reflectMethods);
+    }
+
+    /**
+     * 使用反射递归分析对象的最大深度。
+     */
+    public static final String KEY_MAX_REFLECT_DEPTH = "max-reflect-depth";
+
+    /**
+     * {@link #getMaxReflectDepth()} 的默认值。<br>
+     * 默认只处理 1 级，也即是只对传入的参数进行反射处理。
+     */
+    public static final int DEFAULT_MAX_REFLECT_DEPTH = 1;
+
+    /**
+     * 获取使用反射递归分析对象的最大深度。
+     *
+     * @return 使用反射递归分析对象的最大深度
+     */
+    public int getMaxReflectDepth() {
+        return getAttribute(KEY_MAX_REFLECT_DEPTH, DEFAULT_MAX_REFLECT_DEPTH);
+    }
+
+    /**
+     * 设置使用反射递归分析对象的最大深度。
+     *
+     * @param maxReflectDepth 使用反射递归分析对象的最大深度
+     */
+    public void setMaxReflectDepth(int maxReflectDepth) {
+        this.setAttribute(KEY_MAX_REFLECT_DEPTH, maxReflectDepth);
+    }
+
+    /**
+     * 检查是否可以使用反射分析对象。
+     *
+     * @return 是否可以
+     */
+    public boolean canReflect() {
+        return getMaxReflectDepth() > 0;
+    }
+
+    /**
+     * Key: 日期时间类型的格式。
+     */
+    public static final String KEY_DATETIME_FORMAT = "datetime-format";
+
+    /**
+     * {@link #getDateTimeFormat()} 的默认值。
+     */
+    public static final String DEFAULT_DATETIME_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.getPattern();
+
+    /**
+     * 获取日期时间类型的格式。
+     *
+     * @return 日期时间类型的格式
+     */
+    public String getDateTimeFormat() {
         return getAttribute(KEY_DATETIME_FORMAT, DEFAULT_DATETIME_FORMAT);
     }
 
-    String KEY_DATE_FORMAT = "date-format";
-
-    String DEFAULT_DATE_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.getPattern();
+    /**
+     * 设置日期时间类型的格式。
+     *
+     * @param datetimeFormat 日期时间类型的格式
+     */
+    public void setDateTimeFormat(String datetimeFormat) {
+        this.setAttribute(KEY_DATETIME_FORMAT, datetimeFormat);
+    }
 
     /**
-     * 获取日期格式。
-     *
-     * @return 日期格式
+     * Key: 日期类型的格式。
      */
-    default String getDateFormat() {
+    public static final String KEY_DATE_FORMAT = "date-format";
+
+    /**
+     * {@link #getDateFormat()} 的默认值。
+     */
+    public static final String DEFAULT_DATE_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.getPattern();
+
+    /**
+     * 获取日期类型的格式。
+     *
+     * @return 日期类型的格式
+     */
+    public String getDateFormat() {
         return getAttribute(KEY_DATE_FORMAT, DEFAULT_DATE_FORMAT);
     }
 
-    String KEY_TIME_FORMAT = "time-format";
-
-    String DEFAULT_TIME_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_TIME_FORMAT.getPattern();
+    /**
+     * 设置日期类型的格式。
+     *
+     * @param dateFormat 日期类型的格式
+     */
+    public void setDateFormat(String dateFormat) {
+        this.setAttribute(KEY_DATE_FORMAT, dateFormat);
+    }
 
     /**
-     * 获取时间格式。
-     *
-     * @return 时间格式
+     * Key: 时间类型的格式。
      */
-    default String getTimeFormat() {
+    public static final String KEY_TIME_FORMAT = "time-format";
+
+    /**
+     * {@link #getTimeFormat()} 的默认值。
+     */
+    public static final String DEFAULT_TIME_FORMAT = DateFormatUtils.ISO_8601_EXTENDED_TIME_FORMAT.getPattern();
+
+    /**
+     * 获取时间类型的格式。
+     *
+     * @return 时间类型的格式
+     */
+    public String getTimeFormat() {
         return getAttribute(KEY_TIME_FORMAT, DEFAULT_TIME_FORMAT);
     }
 
     /**
-     * 生成一个可供修改数据的 {@link Builder} 对象。
+     * 设置时间类型的格式。
      *
-     * @return {@link Builder} 对象
+     * @param timeFormat 时间类型的格式
      */
-    default Builder mutable() {
-        return new Builder(this);
+    public void setTimeFormat(String timeFormat) {
+        this.setAttribute(KEY_TIME_FORMAT, timeFormat);
     }
 
     /**
-     * 基于字典生成 {@link ToStringConfig} 实例。
-     *
-     * @param map 字典
-     * @return {@link ToStringConfig} 实例
+     * Key: 数组、集合和字典中输出元素的最大个数。
      */
-    static ToStringConfig of(Map<?, ?> map) {
-        return new DefaultToStringConfig(map);
+    public static final String KEY_MAX_ITEM_COUNT = "max-item-count";
+
+    /**
+     * {@link #getMaxItemCount()} 的默认值。
+     */
+    public static final int DEFAULT_MAX_ITEM_COUNT = 10;
+
+    /**
+     * 获取数组、集合和字典中输出元素的最大个数。
+     *
+     * @return 数组、集合和字典中输出元素的最大个数
+     */
+    public int getMaxItemCount() {
+        return getAttribute(KEY_MAX_ITEM_COUNT, DEFAULT_MAX_ITEM_COUNT);
     }
 
     /**
-     * {@link ToStringConfig} 的生成工具类。
+     * 设置数组、集合和字典中输出元素的最大个数。
      *
-     * @author wingsweaver
+     * @param maxItemCount 数组、集合和字典中输出元素的最大个数
      */
-    class Builder extends AbstractAttributesBuilder<Object, Builder> {
-        @SuppressWarnings("unchecked")
-        public Builder(Map<?, ?> map) {
-            super((Map<Object, ?>) map);
-        }
+    public void setMaxItemCount(int maxItemCount) {
+        this.setAttribute(KEY_MAX_ITEM_COUNT, maxItemCount);
+    }
 
-        public Builder(ToStringConfig config) {
-            this(config.asMap());
-        }
+    /**
+     * Key: 调用 {@link Object#toString()} 进而触发 {@link ToStringBuilder} 处理的实例。
+     */
+    public static final String KEY_OBJECT_TO_STRING = "object-to-string";
 
-        public Builder setPublicOnly(boolean defaultOnly) {
-            return update(KEY_PUBLIC_ONLY, defaultOnly);
-        }
+    public Object getObjectToString() {
+        return getAttribute(KEY_OBJECT_TO_STRING);
+    }
 
-        public Builder setIncludeTypeName(boolean includeTypeName) {
-            return update(KEY_INCLUDE_TYPE_NAME, includeTypeName);
-        }
-
-        public Builder setIncludeTransient(boolean includeTransient) {
-            return update(KEY_INCLUDE_TRANSIENT, includeTransient);
-        }
-
-        public Builder setReflectFields(boolean reflectFields) {
-            return update(KEY_REFLECT_FIELDS, reflectFields);
-        }
-
-        public Builder setReflectMethods(boolean reflectMethods) {
-            return update(KEY_REFLECT_METHODS, reflectMethods);
-        }
-
-        public Builder setDateTimeFormat(String dateTimeFormat) {
-            return update(KEY_DATETIME_FORMAT, dateTimeFormat);
-        }
-
-        public Builder setDateFormat(String dateFormat) {
-            return update(KEY_DATE_FORMAT, dateFormat);
-        }
-
-        public Builder setTimeFormat(String timeFormat) {
-            return update(KEY_TIME_FORMAT, timeFormat);
-        }
-
-        public ToStringConfig build() {
-            return of(map);
-        }
+    public void setObjectToString(Object object) {
+        this.setAttribute(KEY_OBJECT_TO_STRING, object);
     }
 }

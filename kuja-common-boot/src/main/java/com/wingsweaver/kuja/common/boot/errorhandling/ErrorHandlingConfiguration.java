@@ -18,6 +18,13 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @EnableKujaReturnValue
 public class ErrorHandlingConfiguration extends AbstractConfiguration {
+    /**
+     * 生成 PreDefinedBusinessExceptionHandler 的 Bean。
+     *
+     * @param returnValueFactory ReturnValueFactory
+     * @param patchers           ErrorDefinition2ReturnValuePatcher 的集合
+     * @return PreDefinedBusinessExceptionHandler 的 Bean
+     */
     @Bean
     public PreDefinedBusinessExceptionHandler preDefinedBusinessExceptionHandler(
             ReturnValueFactory returnValueFactory,
@@ -28,6 +35,13 @@ public class ErrorHandlingConfiguration extends AbstractConfiguration {
         return handler;
     }
 
+    /**
+     * 生成 DefaultErrorHandlingDelegate 的 Bean。
+     *
+     * @param contextCustomizers ErrorHandlerContextCustomizer 的集合
+     * @param errorHandlers      ErrorHandler 的集合
+     * @return DefaultErrorHandlingDelegate 的 Bean
+     */
     @Bean
     @ConditionalOnMissingBean
     public ErrorHandlingDelegate errorHandlingDelegate(ObjectProvider<ErrorHandlerContextCustomizer> contextCustomizers,
