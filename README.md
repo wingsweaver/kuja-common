@@ -1,5 +1,5 @@
 # kuja-common
-![kujas-tiny](.\kujas-tiny.png) kuja 的通用组件库。
+kuja 的通用组件库。
 
 作为整个 kuja 的基石，为上层的 `kuja-cloud`、`kuja-biz`、`kuja-app` 等提供基础支撑。
 
@@ -125,23 +125,29 @@ Starter 项目只是对相应核心项目的封装，以便自动激活核心项
 - [Gitee](https://gitee.com/wingsweaver/kuja-repo) 上的备用 Repository（含 Snapshot 和 Release）
 
 ``` xml
-<repositories>
-    <repository>
-        <id>kuja-repo-gitee</id>
-        <name>Kuja Repository on Gitee</name>
-        <url>https://gitee.com/wingsweaver/kuja-repo</url>
-    </repository>
-</repositories>
+	<repositories>
+		<repository>
+			<id>kuja-repo-gitee</id>
+			<name>Kuja Repository on Gitee</name>
+			<url>https://gitee.com/wingsweaver/kuja-repo/raw/main</url>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 ```
 
-- [Github](https://github.com/wingsweaver/kuja-repo) 上的备用 Repository（含 Snapshot 和 Release）
+- [Github](https://github.com/wingsweaver/kuja-repo) 上的备用 Repository（含 Snapshot 和 Release，需要翻墙）
 
 ``` xml
 <repositories>
     <repository>
         <id>kuja-repo-github</id>
         <name>Kuja Repository on Github</name>
-        <url>https://github.com/wingsweaver/kuja-repo</url>
+			<url>https://raw.githubusercontent.com/wingsweaver/kuja-repo/main</url>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
     </repository>
 </repositories>
 ```
