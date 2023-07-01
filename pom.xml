@@ -40,7 +40,7 @@
         <semver4j.version>3.1.0</semver4j.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-io.version>2.2</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <slf4j.version>1.7.32</slf4j.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <redisson.version>3.19.0</redisson.version>
